@@ -1,2 +1,5 @@
 #capeta node
 node_modules/
+
+#database
+config.js/
