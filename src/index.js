@@ -3,7 +3,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const libs = require("./libs/initialSetup");
 const dotenv = require("dotenv");
-//dotenv.config();
+dotenv.config();
 require("./libs/database");
 
 //rutas
