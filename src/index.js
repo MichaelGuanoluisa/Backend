@@ -9,7 +9,7 @@ require("./libs/database");
 //rutas
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/userRoutes");
-const homeRoutes = require("./routes/homeRoutes");
+const homeRoutes = require("./routes");
 
 //Crear roles
 libs.createRoles();
@@ -24,7 +24,10 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
 
 // parse application/json
-app.use(bodyParser.json());
+app.use(express.json());
+
+//carpetas publicas
+app.use(express.static("../uploads"));
 
 //rutas
 app.use("/api/auth", authRoutes);

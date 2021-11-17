@@ -1,23 +1,45 @@
 const mongoose = require("mongoose");
 const model = require("../models/events");
+const multer = require("multer");
+const multerConfig = require("../libs/multerConfig");
 
 const parseId = (id) => {
   return mongoose.Types.ObjectId(id);
 };
 
-/*
-exports.createEvents = (req, res) => {
-  const data = req.body;
-  model.create(data, (err, docs) => {
-    if (err) {
-      console.log("Error", err);
-      res.status(422).send({ error: "Error" });
-    } else {
-      res.status(201).send({ data: docs });
+const upload = multer(multerConfig).single("file");
+
+exports.fileUpload = (req, res, next) => {
+  upload(req, res, function (error) {
+    if (error) {
+      res.send({ message: error });
     }
+    return next();
   });
 };
-*/
+
+exports.createEvents = (req, res) => {
+  const data = req.body;
+  const { title, description, imgURL, ubication, schedule, cost } = data;
+  //crear un dato evento en la base de datos
+
+  try {
+    const newEvent = new model({
+      title,
+      description,
+      ubication,
+      schedule,
+      cost,
+    });
+    if (req.file && req.file.filename) {
+      newEvent.imgURL = `${req.file.path}`;
+      newEvent.save();
+      res.send({ message: "registro de evento correctamente" });
+    }
+  } catch (error) {
+    res.send({ message: error });
+  }
+};
 
 exports.getEvents = (req, res) => {
   model.find({}, (err, docs) => {
@@ -38,10 +60,19 @@ exports.getEventsById = async (req, res) => {
 exports.updateEventsById = (req, res) => {
   const id = req.params.id;
   const body = req.body;
-  //const { id } = req.params
-  model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
-    res.send(docs);
-  });
+  try {
+    if (req.file && req.file.filename) {
+      body.imgURL = req.file.path;
+    } else {
+      const event = await model.findById({ _id: parseId(id) });
+      body.imgURL = event.imgURL;
+    }
+    model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
+      res.send({ message: "Evento actualizado correctamente" });
+    });
+  } catch (error) {
+    res.send({ message: error });
+  }
 };
 
 exports.deleteVideosById = (req, res) => {
