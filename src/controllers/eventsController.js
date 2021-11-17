@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const model = require("../models/events");
 const multer = require("multer");
 const multerConfig = require("../libs/multerConfig");
+const { unlink } = require("fs-extra");
+const path = require("path");
 
 const parseId = (id) => {
   return mongoose.Types.ObjectId(id);
@@ -75,10 +77,13 @@ exports.updateEventsById = async (req, res) => {
   }
 };
 
-exports.deleteVideosById = (req, res) => {
-  const id = req.params.id;
-  //const { id } = req.params
-  model.deleteOne({ _id: parseId(id) }, (err, docs) => {
-    res.send(docs);
-  });
+exports.deleteEventsById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const doc = await model.findOneAndDelete({ _id: parseId(id) });
+    unlink(path.resolve("./uploads/" + doc.imgURL));
+    res.send({ message: "Eliminado con exito" });
+  } catch (error) {
+    res.send({ message: error });
+  }
 };

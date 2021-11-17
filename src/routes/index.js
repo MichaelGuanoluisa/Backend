@@ -118,7 +118,7 @@ router.put(
 router.delete(
   "/events/:id",
   [verifyToken, isAdmin],
-  eventsCtrl.deleteVideosById
+  eventsCtrl.deleteEventsById
 );
 
 module.exports = router;
