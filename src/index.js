@@ -7,7 +7,6 @@ dotenv.config();
 require("./libs/database");
 
 //rutas
-const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/userRoutes");
 const homeRoutes = require("./routes");
 
@@ -27,10 +26,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 //carpetas publicas
-app.use(express.static("../uploads"));
+app.use(express.static("uploads"));
 
 //rutas
-app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api", homeRoutes);
 

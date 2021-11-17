@@ -20,7 +20,6 @@ exports.fileUpload = (req, res, next) => {
 
 exports.createNews = (req, res) => {
   const data = req.body;
-  console.log(photo);
   const { title, description, imgURL } = data;
   //crear un dato noticia en la base de datos
 
@@ -30,7 +29,7 @@ exports.createNews = (req, res) => {
       description,
     });
     if (req.file && req.file.filename) {
-      newNews.imgURL = `${req.file.path}`;
+      newNews.imgURL = `${req.file.filename}`;
       newNews.save();
       res.send({ message: "registro de noticias realizado con exito" });
     }
@@ -60,7 +59,7 @@ exports.updateNewsById = async (req, res) => {
   const newNews = req.body;
   try {
     if (req.file && req.file.filename) {
-      newNews.imgURL = req.file.path;
+      newNews.imgURL = req.file.filename;
     } else {
       const notice = await model.findById({ _id: parseId(id) });
       newNews.imgURL = notice.imgURL;

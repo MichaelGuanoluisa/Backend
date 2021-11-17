@@ -29,7 +29,7 @@ exports.createMessages = (req, res) => {
       description,
     });
     if (req.file && req.file.filename) {
-      newMessage.imgURL = `${req.file.path}`;
+      newMessage.imgURL = `${req.file.filename}`;
       newMessage.save();
       res.send({ message: "registro de mensaje correctamente" });
     }
@@ -59,7 +59,7 @@ exports.updateMessagesById = async (req, res) => {
   const body = req.body;
   try {
     if (req.file && req.file.filename) {
-      body.imgURL = req.file.path;
+      body.imgURL = req.file.filename;
     } else {
       const message = await model.findById({ _id: parseId(id) });
       body.imgURL = message.imgURL;

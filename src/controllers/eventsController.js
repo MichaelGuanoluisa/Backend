@@ -32,7 +32,7 @@ exports.createEvents = (req, res) => {
       cost,
     });
     if (req.file && req.file.filename) {
-      newEvent.imgURL = `${req.file.path}`;
+      newEvent.imgURL = `${req.file.filename}`;
       newEvent.save();
       res.send({ message: "registro de evento correctamente" });
     }
@@ -57,12 +57,12 @@ exports.getEventsById = async (req, res) => {
   }
 };
 
-exports.updateEventsById = (req, res) => {
+exports.updateEventsById = async (req, res) => {
   const id = req.params.id;
   const body = req.body;
   try {
     if (req.file && req.file.filename) {
-      body.imgURL = req.file.path;
+      body.imgURL = req.file.filename;
     } else {
       const event = await model.findById({ _id: parseId(id) });
       body.imgURL = event.imgURL;

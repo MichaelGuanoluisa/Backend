@@ -29,7 +29,7 @@ exports.createAlbums = (req, res) => {
       description,
     });
     if (req.file && req.file.filename) {
-      newAlbum.imgURL = `${req.file.path}`;
+      newAlbum.imgURL = `${req.file.filename}`;
       newAlbum.save();
       res.send({ message: "registro de mensaje correctamente" });
     }
@@ -54,12 +54,12 @@ exports.getAlbumsById = async (req, res) => {
   }
 };
 
-exports.updateAlbumsById = (req, res) => {
+exports.updateAlbumsById = async (req, res) => {
   const id = req.params.id;
   const body = req.body;
   try {
     if (req.file && req.file.filename) {
-      body.imgURL = req.file.path;
+      body.imgURL = req.file.filename;
     } else {
       const album = await model.findById({ _id: parseId(id) });
       body.imgURL = album.imgURL;
