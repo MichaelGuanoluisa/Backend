@@ -1,7 +1,7 @@
 {
   "name": "Backend",
   "version": "1.0.0",
-  "description": "login and register with jwt",
+  "description": "Web Services",
   "main": "index.js",
   "babel": {
     "presets": [
