@@ -61,10 +61,11 @@ exports.updateMessagesById = async (req, res) => {
   const id = req.params.id;
   const body = req.body;
   try {
+    const message = await model.findById({ _id: parseId(id) });
     if (req.file && req.file.filename) {
       body.imgURL = req.file.filename;
+      unlink(path.resolve("./uploads/" + message.imgURL));
     } else {
-      const message = await model.findById({ _id: parseId(id) });
       body.imgURL = message.imgURL;
     }
     model.updateOne({ _id: parseId(id) }, body, (err, docs) => {

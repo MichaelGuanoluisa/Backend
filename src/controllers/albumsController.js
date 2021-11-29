@@ -34,7 +34,7 @@ exports.createAlbums = (req, res) => {
     if (req.file && req.file.filename) {
       newAlbum.imgURL = `${req.file.filename}`;
       newAlbum.save();
-      res.send({ message: "registro de mensaje correctamente" });
+      res.send({ message: "registro de foto correctamente" });
     }
   } catch (error) {
     res.send({ message: error });
@@ -61,10 +61,11 @@ exports.updateAlbumsById = async (req, res) => {
   const id = req.params.id;
   const body = req.body;
   try {
+    const album = await model.findById({ _id: parseId(id) });
     if (req.file && req.file.filename) {
       body.imgURL = req.file.filename;
+      unlink(path.resolve("./uploads/" + album.imgURL));
     } else {
-      const album = await model.findById({ _id: parseId(id) });
       body.imgURL = album.imgURL;
     }
     model.updateOne({ _id: parseId(id) }, body, (err, docs) => {

@@ -63,10 +63,11 @@ exports.updateNewsById = async (req, res) => {
   const id = req.params.id;
   const newNews = req.body;
   try {
+    const notice = await model.findById({ _id: parseId(id) });
     if (req.file && req.file.filename) {
       newNews.imgURL = req.file.filename;
+      unlink(path.resolve("./uploads/" + doc.imgURL));
     } else {
-      const notice = await model.findById({ _id: parseId(id) });
       newNews.imgURL = notice.imgURL;
     }
     model.updateOne({ _id: parseId(id) }, newNews, (err, docs) => {

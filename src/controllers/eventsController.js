@@ -67,10 +67,11 @@ exports.updateEventsById = async (req, res) => {
   const id = req.params.id;
   const body = req.body;
   try {
+    const event = await model.findById({ _id: parseId(id) });
     if (req.file && req.file.filename) {
       body.imgURL = req.file.filename;
+      unlink(path.resolve("./uploads/" + event.imgURL));
     } else {
-      const event = await model.findById({ _id: parseId(id) });
       body.imgURL = event.imgURL;
     }
     await model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
