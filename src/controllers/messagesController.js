@@ -15,8 +15,9 @@ exports.fileUpload = (req, res, next) => {
   upload(req, res, function (error) {
     if (error) {
       res.send({ message: error });
+    } else {
+      return next();
     }
-    return next();
   });
 };
 

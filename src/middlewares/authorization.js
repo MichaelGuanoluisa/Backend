@@ -40,9 +40,9 @@ exports.isAdmin = async (req, res, next) => {
 
   for (let i = 0; i < roles.length; i++) {
     if (roles[i].name === "admin") {
-      next();
-      return;
+      return next();
+    } else {
+      return res.status(403).json({ message: "requiere rol administrador" });
     }
   }
-  return res.status(403).json({ message: "requiere rol d administrador" });
 };

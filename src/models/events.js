@@ -22,7 +22,7 @@ const EventsScheme = new mongoose.Schema(
       require: true,
     },
     cost: {
-      type: Number,
+      type: String,
       require: true,
     },
   },

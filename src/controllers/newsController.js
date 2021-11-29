@@ -15,8 +15,9 @@ exports.fileUpload = (req, res, next) => {
   upload(req, res, function (error) {
     if (error) {
       res.send({ message: error });
+    } else {
+      return next();
     }
-    return next();
   });
 };
 
@@ -34,6 +35,8 @@ exports.createNews = (req, res) => {
       newNews.imgURL = `${req.file.filename}`;
       newNews.save();
       res.send({ message: "registro de noticias realizado con exito" });
+    } else {
+      res.send({ message: "no existe imagen" });
     }
   } catch (error) {
     res.send({ message: error });

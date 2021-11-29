@@ -15,32 +15,36 @@ exports.fileUpload = (req, res, next) => {
   upload(req, res, function (error) {
     if (error) {
       res.send({ message: error });
+    } else {
+      return next();
     }
-    return next();
   });
 };
 
-exports.createEvents = (req, res) => {
+exports.createEvents = async (req, res) => {
   const data = req.body;
   const { title, description, imgURL, ubication, schedule, cost } = data;
   //crear un dato evento en la base de datos
 
   try {
-    const newEvent = new model({
-      title,
-      description,
-      ubication,
-      schedule,
-      cost,
-    });
     if (req.file && req.file.filename) {
-      newEvent.imgURL = `${req.file.filename}`;
-      newEvent.save();
-      res.send({ message: "registro de evento correctamente" });
+      data.imgURL = req.file.filename;
+      console.log("si existe el url");
+    } else {
+      data.imgURL = "prueba.png";
     }
   } catch (error) {
-    res.send({ message: error });
+    console.log("Error", error);
   }
+
+  model.create(data, (err, docs) => {
+    if (err) {
+      console.log("Error", err);
+      res.send({ error: "Error" }, 422);
+    } else {
+      res.send({ message: "registro de evento correctamente" });
+    }
+  });
 };
 
 exports.getEvents = (req, res) => {
@@ -69,7 +73,7 @@ exports.updateEventsById = async (req, res) => {
       const event = await model.findById({ _id: parseId(id) });
       body.imgURL = event.imgURL;
     }
-    model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
+    await model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
       res.send({ message: "Evento actualizado correctamente" });
     });
   } catch (error) {
