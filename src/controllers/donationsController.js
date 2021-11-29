@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const model = require("../models/album");
+const model = require("../models/donations");
 const multer = require("multer");
 const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
