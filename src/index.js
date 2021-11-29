@@ -7,7 +7,6 @@ dotenv.config();
 require("./libs/database");
 
 //rutas
-const userRoutes = require("./routes/userRoutes");
 const homeRoutes = require("./routes");
 
 //Crear roles
@@ -29,7 +28,6 @@ app.use(express.json());
 app.use(express.static("uploads"));
 
 //rutas
-app.use("/api/user", userRoutes);
 app.use("/api", homeRoutes);
 
 //inicialización de base de datos
