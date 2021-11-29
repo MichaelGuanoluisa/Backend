@@ -40,7 +40,7 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const userFound = await User.findOne({ email: req.body.email }).populate("roles");
+  const userFound = await User.findOne({ email: req.body.email });
   if (!userFound){
     return res.status(400).json({ message: "usuario no encontrado" });
   }
@@ -49,7 +49,7 @@ exports.login = async (req, res) => {
     req.body.password,
     userFound.password
   );
-  
+
   if (!matchPassword){
     return res
     .status(401)
