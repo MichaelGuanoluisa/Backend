@@ -40,21 +40,22 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const userFound = await User.findOne({ email: req.body.email }).populate(
-    "roles"
-  );
-  if (!userFound)
+  const userFound = await User.findOne({ email: req.body.email }).populate("roles");
+  if (!userFound){
     return res.status(400).json({ message: "usuario no encontrado" });
+  }
 
   const matchPassword = await User.comparePassword(
     req.body.password,
     userFound.password
   );
-  if (!matchPassword)
+  
+  if (!matchPassword){
     return res
-      .status(401)
-      .json({ token: null, message: "Contraseña incorrecta" });
-
+    .status(401)
+    .json({ token: null, message: "Contraseña incorrecta" });
+  }
+    
   console.log(userFound);
   const token = jwt.sign({ id: userFound._id }, process.env.SECRET_KEY, {
     expiresIn: 86400, //24h
