@@ -23,12 +23,12 @@ exports.fileUpload = (req, res, next) => {
 
 exports.createDonations = (req, res) => {
   const data = req.body;
-  const { name, lastName, description, type, delivery, direction, dateDelivery, imgURL } = data;
+  const { name, lastName, descrption, type, delivery, direction, dateDelivery, imgURL } = data;
   //crear un dato album en la base de datos
 
   try {
     const newDonations = new model({
-      name, lastName, description, type, delivery, direction, dateDelivery });
+      name, lastName, descrption, type, delivery, direction, dateDelivery });
     if (req.file && req.file.filename) {
       newDonations.imgURL = `${req.file.filename}`;
       newDonations.save();
