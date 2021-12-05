@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const libs = require("./libs/initialSetup");
 const dotenv = require("dotenv");
+const cors = require("cors");
 dotenv.config();
 require("./libs/database");
 
@@ -26,6 +27,9 @@ app.use(express.json());
 
 //carpetas publicas
 app.use(express.static("uploads"));
+
+//cors para todas las rutas
+app.use(cors());
 
 //rutas
 app.use("/api", homeRoutes);
