@@ -10,7 +10,11 @@ const VideosScheme = new mongoose.Schema(
       type: String,
       required: true,
     },
-    imgURL: {
+    type: {
+      type: String,
+      required: true,
+    },
+    url: {
       type: String,
     },
   },
@@ -20,4 +24,4 @@ const VideosScheme = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Videos", VideosScheme);
+module.exports = mongoose.model("VideosYoutube", VideosScheme);
