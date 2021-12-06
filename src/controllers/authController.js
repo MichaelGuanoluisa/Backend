@@ -44,13 +44,14 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   const userFound = await User.findOne({ email: req.body.email });
-  const roles = await Role.find({ _id: { $in: userFound.roles } });
-  const roleName = await roles[0].name;
   console.log(userFound);
-  console.log(roleName);
+  
   if (!userFound){
     return res.status(400).json({ message: "usuario no encontrado" });
   }
+
+  const roles = await Role.find({ _id: { $in: userFound.roles } });
+  const roleName = await roles[0].name;
 
   const matchPassword = await User.comparePassword(
     req.body.password,
@@ -60,7 +61,7 @@ exports.login = async (req, res) => {
   if (!matchPassword){
     return res
     .status(401)
-    .json({ token: null, message: "Contraseña incorrecta" });
+    .json({ message: "Contraseña incorrecta" });
   }
 
   const token = jwt.sign({ id: userFound._id }, process.env.SECRET_KEY, {
