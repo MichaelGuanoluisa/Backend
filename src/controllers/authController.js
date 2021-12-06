@@ -9,6 +9,11 @@ exports.register = async (req, res) => {
   //obtener datos
   let { name, lastname, email, password, roles } = data;
 
+  const userFound = await User.findOne({ email: req.body.email });
+  if(userFound){
+    res.send({message: "Este usuario ya esta registrado"})
+  }
+
   //crear nuevo usuario con su password encriptada
   const newUser = new User({
     name,
@@ -30,17 +35,19 @@ exports.register = async (req, res) => {
   const savedUser = await newUser.save();
 
   //generar token
-  const token = jwt.sign({ id: savedUser._id }, process.env.SECRET_KEY, {
+  /*const token = jwt.sign({ id: savedUser._id }, process.env.SECRET_KEY, {
     expiresIn: 86400, //24h
   });
-
-  console.log(newUser);
-
-  res.send({ token });
+  */
+  res.send({ message: "Usuario registrado con exito" });
 };
 
 exports.login = async (req, res) => {
   const userFound = await User.findOne({ email: req.body.email });
+  const roles = await Role.find({ _id: { $in: userFound.roles } });
+  const roleName = await roles[0].name;
+  console.log(userFound);
+  console.log(roleName);
   if (!userFound){
     return res.status(400).json({ message: "usuario no encontrado" });
   }
@@ -55,10 +62,12 @@ exports.login = async (req, res) => {
     .status(401)
     .json({ token: null, message: "Contraseña incorrecta" });
   }
-    
-  console.log(userFound);
+
   const token = jwt.sign({ id: userFound._id }, process.env.SECRET_KEY, {
     expiresIn: 86400, //24h
   });
-  res.send({ token });
+  res.send(
+    { token: token,
+  role: roleName}
+);
 };

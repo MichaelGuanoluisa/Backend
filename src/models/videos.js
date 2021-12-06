@@ -24,4 +24,4 @@ const VideosScheme = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("VideosYoutube", VideosScheme);
+module.exports = mongoose.model("Videos", VideosScheme);
