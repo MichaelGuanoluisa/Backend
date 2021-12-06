@@ -47,7 +47,7 @@ exports.login = async (req, res) => {
   console.log(userFound);
   
   if (!userFound){
-    return res.status(400).json({ message: "usuario no encontrado" });
+    return res.send({ message: "usuario no encontrado" });
   }
 
   const roles = await Role.find({ _id: { $in: userFound.roles } });
@@ -59,16 +59,15 @@ exports.login = async (req, res) => {
   );
 
   if (!matchPassword){
-    return res
-    .status(401)
-    .json({ message: "Contraseña incorrecta" });
+    return res.send({ message: "Contraseña incorrecta" });
   }
 
   const token = jwt.sign({ id: userFound._id }, process.env.SECRET_KEY, {
     expiresIn: 86400, //24h
   });
   res.send(
-    { token: token,
+    { message: "",
+      token: token,
   role: roleName}
 );
 };
