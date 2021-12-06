@@ -40,4 +40,4 @@ const DonationsScheme = new mongoose.Schema(
     }
   );
   
-  module.exports = mongoose.model("Donations", DonationsScheme);
+  module.exports = mongoose.model("Donation", DonationsScheme);
