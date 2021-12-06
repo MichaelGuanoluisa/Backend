@@ -47,7 +47,7 @@ exports.login = async (req, res) => {
   console.log(userFound);
   
   if (!userFound){
-    return res.status(400).send({ message: "usuario no encontrado" });
+    return res.send({ message: "usuario no encontrado" });
   }
 
   const roles = await Role.find({ _id: { $in: userFound.roles } });
