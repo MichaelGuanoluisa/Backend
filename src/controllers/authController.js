@@ -3,6 +3,7 @@ const Role = require("../models/role");
 const jwt = require("jsonwebtoken");
 //const config = require('../config');
 
+
 exports.register = async (req, res) => {
   //obtener datos
   const { name, lastname, email, password, roles } = req.body;
@@ -42,41 +43,48 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const userFound = await User.findOne({ email: req.body.email });
-  console.log(userFound);
-  
-  if (!userFound){
-    return res.send({ token: "",
+
+  const user = await User.findOne({ email: req.body.email });
+
+  console.log(user);
+
+  req.user = user;
+
+  if (!user){
+    return res.status(400).send({ token: "",
     message: "usuario no encontrado" });
   }
 
-  const roles = await Role.find({ _id: { $in: userFound.roles } });
+  const roles = await Role.find({ _id: { $in: user.roles } });
   const roleName = await roles[0].name;
 
   const matchPassword = await User.comparePassword(
     req.body.password,
-    userFound.password
+    user.password
   );
 
   if (!matchPassword){
-    return res.send({ token:"",
+    return res.status(401).send({ token:"",
     message: "Contraseña incorrecta" });
   }
 
-  const token = jwt.sign({ id: userFound._id }, process.env.SECRET_KEY, {
+  const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
     expiresIn: 86400, //24h
   });
   res.send(
     { token: token,
-  role: roleName}
-);
+      role: roleName,
+      id: user._id  }
+  );
 };
 
-exports.me = (req, res) => {
-  if (!req.user)
-    return res.status(403).json({ errors: ["login to get the info"] });
-
-  return res.status(200).json({ user: req.user });
+exports.me = async (req, res) => {
+  if (!req.user){
+    return res.status(403).json({ errors: "login to get the info"});
+  }else{
+    return res.status(200).json({ user: req.user });
+  }
+  
 }
 
 exports.logout = (req, res) => {

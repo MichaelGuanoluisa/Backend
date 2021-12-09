@@ -6,6 +6,7 @@ const albumsCtrl = require("../controllers/albumsController");
 const videosCtrl = require("../controllers/videosController");
 const eventsCtrl = require("../controllers/eventsController");
 const donationsCtrl = require("../controllers/donationsController");
+const usersCtrl = require("../controllers/userController");
 const { verifyToken, isAdmin } = require("../middlewares/authorization");
 const controller = require("../controllers/authController");
 
@@ -16,7 +17,14 @@ const controller = require("../controllers/authController");
 router.post("/auth/register", controller.register);
 router.post("/auth/login", controller.login);
 router.get("/auth/logout", controller.logout);
-router.get("/auth/me", controller.me);
+
+//
+//
+//
+// ------------------- rutas auth
+router.get("/user/:id", usersCtrl.getUsersById);
+router.put("/user/:id", usersCtrl.updateUsersById);
+
 
 //
 //
