@@ -1,45 +1,44 @@
-const mongoose = require("mongoose");
 const User = require("../models/users");
 const Role = require("../models/role");
 const jwt = require("jsonwebtoken");
 //const config = require('../config');
 
 exports.register = async (req, res) => {
-  let data = req.body;
   //obtener datos
-  let { name, lastname, email, password, roles } = data;
+  const { name, lastname, email, password, roles } = req.body;
 
-  const userFound = await User.findOne({ email: req.body.email });
-  if(userFound){
-    res.send({message: "Este usuario ya esta registrado"})
+  try {
+    const user = await User.findOne({ email: email });
+    if(!user){
+
+      const newUser = new User({
+        name,
+        lastname,
+        email,
+        password: await User.encryptPassword(password),
+      });
+
+      if (roles) {
+        const foundRoles = await Role.find({ name: { $in: roles } });
+        newUser.roles = foundRoles.map((role) => role._id);
+      } else {
+        const role = await Role.findOne({ name: "user" });
+        newUser.roles = [role._id];
+      }
+    
+      //guardar usuario
+      await newUser.save();
+      res.status(200).send({ message: "Usuario registrado con exito" });
+    }else{
+      res.status(422).send({message: "Este usuario ya esta registrado"})
+    }
+    
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({ errors: ["Ocurrio algun error"] });
   }
 
-  //crear nuevo usuario con su password encriptada
-  const newUser = new User({
-    name,
-    lastname,
-    email,
-    password: await User.encryptPassword(password),
-  });
-
-  // Roles
-  if (roles) {
-    const foundRoles = await Role.find({ name: { $in: roles } });
-    newUser.roles = foundRoles.map((role) => role._id);
-  } else {
-    const role = await Role.findOne({ name: "user" });
-    newUser.roles = [role._id];
-  }
-
-  //guardar usuario
-  const savedUser = await newUser.save();
-
-  //generar token
-  /*const token = jwt.sign({ id: savedUser._id }, process.env.SECRET_KEY, {
-    expiresIn: 86400, //24h
-  });
-  */
-  res.send({ message: "Usuario registrado con exito" });
 };
 
 exports.login = async (req, res) => {
@@ -72,3 +71,15 @@ exports.login = async (req, res) => {
   role: roleName}
 );
 };
+
+exports.me = (req, res) => {
+  if (!req.user)
+    return res.status(403).json({ errors: ["login to get the info"] });
+
+  return res.status(200).json({ user: req.user });
+}
+
+exports.logout = (req, res) => {
+  req.logout();
+  res.status(200).json({ msg: "logged out" });
+}

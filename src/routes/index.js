@@ -15,6 +15,8 @@ const controller = require("../controllers/authController");
 // ------------------- rutas auth
 router.post("/auth/register", controller.register);
 router.post("/auth/login", controller.login);
+router.get("/auth/logout", controller.logout);
+router.get("/auth/me", controller.me);
 
 //
 //
