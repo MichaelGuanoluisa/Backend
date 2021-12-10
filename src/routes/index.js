@@ -9,6 +9,8 @@ const donationsCtrl = require("../controllers/donationsController");
 const usersCtrl = require("../controllers/userController");
 const { verifyToken, isAdmin } = require("../middlewares/authorization");
 const controller = require("../controllers/authController");
+const cors = require("cors");
+
 
 //
 //
@@ -22,8 +24,8 @@ router.get("/auth/logout", controller.logout);
 //
 //
 // ------------------- rutas auth
-router.get("/user/:id", usersCtrl.getUsersById);
-router.put("/user/:id", usersCtrl.updateUsersById);
+router.get("/user/:id", cors(), usersCtrl.getUsersById);
+router.put("/user/:id", cors(), usersCtrl.updateUsersById);
 
 
 //
