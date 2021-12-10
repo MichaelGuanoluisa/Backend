@@ -7,6 +7,7 @@ const cors = require("cors");
 dotenv.config();
 require("./libs/database");
 
+
 //rutas
 const homeRoutes = require("./routes");
 
@@ -29,7 +30,7 @@ app.use(express.json());
 app.use(express.static("uploads"));
 
 //cors para todas las rutas
-app.use(cors({ origin: true, credentials: true  }));
+app.use(cors());
 
 //rutas
 app.use("/api", homeRoutes);
@@ -37,4 +38,4 @@ app.use("/api", homeRoutes);
 //inicialización de base de datos
 const port = process.env.PORT || 3030;
 app.listen(port);
-console.log("Escuchando puerto", 3001);
+console.log("Escuchando puerto", port);
