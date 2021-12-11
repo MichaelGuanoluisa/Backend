@@ -48,10 +48,10 @@ exports.login = async (req, res) => {
 
   console.log(user);
 
-  req.user = user;
+  exports.resUser = user;
 
   if (!user){
-    return res.status(400).send({ token: "",
+    return res.send({ token: "",
     message: "usuario no encontrado" });
   }
 
@@ -64,25 +64,24 @@ exports.login = async (req, res) => {
   );
 
   if (!matchPassword){
-    return res.status(401).send({ token:"",
+    return res.send({ token:"",
     message: "Contraseña incorrecta" });
   }
 
   const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
     expiresIn: 86400, //24h
   });
-  res.send(
+  return res.send(
     { token: token,
-      role: roleName,
-      id: user._id  }
+      role: roleName}
   );
 };
 
 exports.me = async (req, res) => {
-  if (!req.user){
-    return res.status(403).json({ errors: "login to get the info"});
+  if (!this.resUser){
+    return res.json({ errors: "login to get the info"});
   }else{
-    return res.status(200).json({ user: req.user });
+    return res.status(200).json({ user: this.resUser });
   }
   
 }
