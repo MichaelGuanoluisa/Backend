@@ -31,7 +31,7 @@ exports.register = async (req, res) => {
       await newUser.save();
       res.status(200).send({ message: "Usuario registrado con exito" });
     }else{
-      res.status(422).send({message: "Este usuario ya esta registrado"})
+      res.send({message: "Este usuario ya esta registrado"})
     }
     
   } catch (error) {
@@ -47,8 +47,6 @@ exports.login = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
 
   console.log(user);
-
-  exports.resUser = user;
 
   if (!user){
     return res.send({ token: "",
@@ -78,10 +76,27 @@ exports.login = async (req, res) => {
 };
 
 exports.me = async (req, res) => {
-  if (!this.resUser){
-    return res.json({ errors: "login to get the info"});
-  }else{
-    return res.status(200).json({ user: this.resUser });
+  try {
+    //obtener token
+    const token = req.params.id;
+    console.log(token);
+
+    //comprobar si se ingresa token
+    if (!token) return res.status(403).json({ message: "Inicie sesión" });
+
+    //extraer datos del token
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+
+    //comprobar si el usuario existe
+    const user = await User.findById(decoded.id, { password: 0 });
+    if (!user){
+      return res.status(404).json({ message: "usuario no activo" });
+    }else{
+      return res.send({user: user})
+    }
+ 
+  } catch (error) {
+    return res.status(401).json({ message: "token invalido" });
   }
   
 }
