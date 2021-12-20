@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const model = require("../models/events");
+const eventModel = require("../models/events");
 const multer = require("multer");
 const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
@@ -22,40 +22,41 @@ exports.fileUpload = (req, res, next) => {
 };
 
 exports.createEvents = async (req, res) => {
-  const data = req.body;
-  const { title, description, imgURL, ubication, schedule, cost } = data;
-  //crear un dato evento en la base de datos
 
   try {
+    const data = req.body;
     if (req.file && req.file.filename) {
       data.imgURL = req.file.filename;
       console.log("si existe el url");
     } else {
       data.imgURL = "prueba.png";
     }
+
+    eveneventModelt.create(data, (err, docs) => {
+      if (err) {
+        console.log("Error", err);
+        res.send({ error: "Error" }, 422);
+      } else {
+        res.send({ message: "registro de evento correctamente" });
+      }
+    });
+
   } catch (error) {
     console.log("Error", error);
   }
 
-  model.create(data, (err, docs) => {
-    if (err) {
-      console.log("Error", err);
-      res.send({ error: "Error" }, 422);
-    } else {
-      res.send({ message: "registro de evento correctamente" });
-    }
-  });
+  
 };
 
 exports.getEvents = (req, res) => {
-  model.find({}, (err, docs) => {
+  eventModel.find({}, (err, docs) => {
     res.send(docs);
   });
 };
 
 exports.getEventsById = async (req, res) => {
   const id = req.params.id;
-  const news = await model.findById({ _id: parseId(id) });
+  const news = await eventModel.findById({ _id: parseId(id) });
   if (news == null) {
     res.status(200).send("null");
   } else {
@@ -67,14 +68,14 @@ exports.updateEventsById = async (req, res) => {
   const id = req.params.id;
   const body = req.body;
   try {
-    const event = await model.findById({ _id: parseId(id) });
+    const event = await eventModel.findById({ _id: parseId(id) });
     if (req.file && req.file.filename) {
       body.imgURL = req.file.filename;
       unlink(path.resolve("./uploads/" + event.imgURL));
     } else {
       body.imgURL = event.imgURL;
     }
-    await model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
+    await eventModel.updateOne({ _id: parseId(id) }, body, (err, docs) => {
       res.send({ message: "Evento actualizado correctamente" });
     });
   } catch (error) {
@@ -85,10 +86,11 @@ exports.updateEventsById = async (req, res) => {
 exports.deleteEventsById = async (req, res) => {
   try {
     const id = req.params.id;
-    const doc = await model.findOneAndDelete({ _id: parseId(id) });
+    const doc = await eventModel.findOneAndDelete({ _id: parseId(id) });
     unlink(path.resolve("./uploads/" + doc.imgURL));
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
     res.send({ message: error });
   }
 };
+

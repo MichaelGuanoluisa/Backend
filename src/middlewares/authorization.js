@@ -7,7 +7,6 @@ exports.verifyToken = async (req, res, next) => {
   try {
     //obtener token
     const token = req.headers["x-access-token"];
-    console.log(token);
 
     //comprobar si se ingresa token
     if (!token) return res.status(403).json({ message: "Inicie sesión" });
@@ -15,7 +14,6 @@ exports.verifyToken = async (req, res, next) => {
     //extraer datos del token
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     req.userId = decoded.id;
-    console.log(decoded);
 
     //comprobar si el usuario existe
     const user = await User.findById(req.userId, { password: 0 });
@@ -36,13 +34,25 @@ exports.verifyToken = async (req, res, next) => {
 exports.isAdmin = async (req, res, next) => {
   const user = await User.findById(req.userId);
   const roles = await Role.find({ _id: { $in: user.roles } });
-  console.log(roles);
 
   for (let i = 0; i < roles.length; i++) {
     if (roles[i].name === "admin") {
       return next();
     } else {
       return res.status(403).json({ message: "requiere rol administrador" });
+    }
+  }
+};
+
+exports.isUser = async (req, res, next) => {
+  const user = await User.findById(req.userId);
+  const roles = await Role.find({ _id: { $in: user.roles } });
+
+  for (let i = 0; i < roles.length; i++) {
+    if (roles[i].name === "user") {
+      return next();
+    } else {
+      return res.status(403).json({ message: "requiere iniciar sesion" });
     }
   }
 };

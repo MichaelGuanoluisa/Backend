@@ -5,9 +5,11 @@ const messagesCtrl = require("../controllers/messagesController");
 const albumsCtrl = require("../controllers/albumsController");
 const videosCtrl = require("../controllers/videosController");
 const eventsCtrl = require("../controllers/eventsController");
+const eventsInsCtrl = require("../controllers/eventsInscriptionController");
 const donationsCtrl = require("../controllers/donationsController");
+const questionaryCtrl = require("../controllers/questionaryController");
 const usersCtrl = require("../controllers/userController");
-const { verifyToken, isAdmin } = require("../middlewares/authorization");
+const { verifyToken, isAdmin, isUser } = require("../middlewares/authorization");
 const controller = require("../controllers/authController");
 
 
@@ -81,11 +83,29 @@ router.delete("/events/:id", [verifyToken, isAdmin], eventsCtrl.deleteEventsById
 //
 //
 //
+//--------------- rutas de eventos user
+router.post("/events/inscriptions", [verifyToken, isUser], eventsInsCtrl.fileUpload, eventsInsCtrl.createInscription);
+router.get("/inscriptions", [verifyToken, isUser], eventsInsCtrl.getInscriptions);
+router.get("/inscriptions/all", [verifyToken, isAdmin], eventsInsCtrl.getAllInscriptions);
+
+//
+//
+//
 //--------------- rutas de donaciones admin
 router.get("/donations", donationsCtrl.getDonations);
 router.get("/donations/:id", );
 router.post("/donations", [verifyToken, isAdmin], donationsCtrl.fileUpload, donationsCtrl.createDonations);
 router.put("/donations/:id", [verifyToken, isAdmin], donationsCtrl.fileUpload, donationsCtrl.updateDonationsById);
 router.delete("/donations/:id", [verifyToken, isAdmin], donationsCtrl.deleteDonationsById);
+
+//
+//
+//
+//--------------- rutas de cuestionarios
+router.post("/questionary", [verifyToken, isAdmin], questionaryCtrl.createQuestionary);
+router.get("/questionary", [verifyToken], questionaryCtrl.getQuestionary);
+router.put("/questionary/:id", [verifyToken, isAdmin], questionaryCtrl.updateQuestionaryById);
+router.delete("/questionary/:id", [verifyToken, isAdmin], questionaryCtrl.deleteQuestionaryById);
+router.delete("/questionary", [verifyToken, isAdmin], questionaryCtrl.deleteAllQuestionary);
 
 module.exports = router;

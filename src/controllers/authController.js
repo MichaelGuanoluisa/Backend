@@ -49,7 +49,7 @@ exports.login = async (req, res) => {
   console.log(user);
 
   if (!user){
-    return res.send({ token: "",
+    return res.status(404).send({ token: "",
     message: "usuario no encontrado" });
   }
 
@@ -62,7 +62,7 @@ exports.login = async (req, res) => {
   );
 
   if (!matchPassword){
-    return res.send({ token:"",
+    return res.status(401).send({ token:"",
     message: "Contraseña incorrecta" });
   }
 
