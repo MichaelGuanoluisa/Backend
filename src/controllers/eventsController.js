@@ -32,7 +32,7 @@ exports.createEvents = async (req, res) => {
       data.imgURL = "prueba.png";
     }
 
-    eveneventModelt.create(data, (err, docs) => {
+    eventModel.create(data, (err, docs) => {
       if (err) {
         console.log("Error", err);
         res.send({ error: "Error" }, 422);

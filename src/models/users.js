@@ -18,6 +18,11 @@ const UserScheme = new mongoose.Schema(
             unique: true,
             required: [true, 'El correo es necesario']
         },
+        cellphone: {
+            type: String,
+            unique: true,
+            required: [true, 'El número celular es necesario']
+        },
         password:{
             type: String,
             required: [true, 'La contraseña es necesaria']

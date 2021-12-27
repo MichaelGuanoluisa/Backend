@@ -7,14 +7,21 @@ const parseId = (id) => {
 
 exports.createVideos = (req, res) => {
   const data = req.body;
-  model.create(data, (err, docs) => {
-    if (err) {
-      console.log("Error", err);
-      res.status(422).send({ error: "Error" });
-    } else {
-      res.status(201).send(docs );
+  const {title, description, type, url} = data;
+  try {
+    if(type == "niños" || type == "jovenes" || type == "general"){
+      model.create(data, (err, docs) => {
+        res.status(201).send({message: "video creado correctamente"});
+      });
+    }else{
+      res.status(404).send({message: "solo puede ser de 3 tipos: niños, jovenes y general"})
     }
-  });
+    
+  } catch (error) {
+    res.status(500).send({ error: error });
+    
+  }
+  
 };
 
 exports.getVideos = (req, res) => {

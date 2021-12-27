@@ -1,6 +1,7 @@
 const User = require("../models/users");
 const Role = require("../models/role");
 const jwt = require("jsonwebtoken");
+const res = require("express/lib/response");
 //const config = require('../config');
 
 
@@ -10,6 +11,7 @@ exports.register = async (req, res) => {
 
   try {
     const user = await User.findOne({ email: email });
+    
     if(!user){
 
       const newUser = new User({
@@ -46,11 +48,8 @@ exports.login = async (req, res) => {
 
   const user = await User.findOne({ email: req.body.email });
 
-  console.log(user);
-
   if (!user){
-    return res.status(404).send({ token: "",
-    message: "usuario no encontrado" });
+    return res.status(404).send({message: "usuario no encontrado" });
   }
 
   const roles = await Role.find({ _id: { $in: user.roles } });
@@ -62,30 +61,28 @@ exports.login = async (req, res) => {
   );
 
   if (!matchPassword){
-    return res.status(401).send({ token:"",
-    message: "Contraseña incorrecta" });
+    return res.status(401).send({ message: "Contraseña incorrecta" });
   }
 
-  const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+  req.token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
     expiresIn: 86400, //24h
   });
+
+
   return res.send(
-    { token: token,
-      role: roleName}
+    { token: req.token,
+      user: user,
+    role: roleName}
   );
 };
 
 exports.me = async (req, res) => {
   try {
     //obtener token
-    const token = req.params.id;
-    console.log(token);
-
-    //comprobar si se ingresa token
-    if (!token) return res.status(403).json({ message: "Inicie sesión" });
+    const token = req.headers["x-access-token"];
 
     //extraer datos del token
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const decoded = this.decoded(token)
 
     //comprobar si el usuario existe
     const user = await User.findById(decoded.id, { password: 0 });
@@ -102,6 +99,26 @@ exports.me = async (req, res) => {
 }
 
 exports.logout = (req, res) => {
-  req.logout();
-  res.status(200).json({ msg: "logged out" });
+  
+  try {
+
+    const token = req.headers["x-access-token"];
+    if(!token) return res.status(403).send({ message: "Inicie sesión" });
+    res.status(200).send({ msg: "logged out" });
+
+  } catch (error) {
+    return res.status(500).send({message: error})
+  }
+}
+
+exports.decoded = (token) => {
+  try {
+    if (!token){
+      return res.status(403).send({ message: "Inicie sesión" });
+    }
+    return decoded = jwt.verify(token, process.env.SECRET_KEY);
+  } catch (error) {
+    return res.status(500).send({message: error})
+  } 
+  
 }

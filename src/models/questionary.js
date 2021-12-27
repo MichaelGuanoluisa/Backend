@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const QuestionaryScheme = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -31,4 +35,4 @@ const QuestionaryScheme = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Questionaries", QuestionaryScheme);
+module.exports = mongoose.model("Questionary", QuestionaryScheme);

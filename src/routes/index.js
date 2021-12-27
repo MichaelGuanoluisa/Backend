@@ -9,6 +9,7 @@ const eventsInsCtrl = require("../controllers/eventsInscriptionController");
 const donationsCtrl = require("../controllers/donationsController");
 const questionaryCtrl = require("../controllers/questionaryController");
 const usersCtrl = require("../controllers/userController");
+const scoreCtrl = require("../controllers/scoreController");
 const { verifyToken, isAdmin, isUser } = require("../middlewares/authorization");
 const controller = require("../controllers/authController");
 
@@ -20,7 +21,7 @@ const controller = require("../controllers/authController");
 router.post("/auth/register", controller.register);
 router.post("/auth/login", controller.login);
 router.get("/auth/logout", controller.logout);
-router.get("/auth/user/:id", controller.me);
+router.get("/auth/user", controller.me);
 
 //
 //
@@ -84,17 +85,18 @@ router.delete("/events/:id", [verifyToken, isAdmin], eventsCtrl.deleteEventsById
 //
 //
 //--------------- rutas de eventos user
-router.post("/events/inscriptions", [verifyToken, isUser], eventsInsCtrl.fileUpload, eventsInsCtrl.createInscription);
+router.post("/inscriptions", [verifyToken, isUser], eventsInsCtrl.createInscription);
 router.get("/inscriptions", [verifyToken, isUser], eventsInsCtrl.getInscriptions);
 router.get("/inscriptions/all", [verifyToken, isAdmin], eventsInsCtrl.getAllInscriptions);
+router.delete("/inscriptions/:id", [verifyToken, isUser], eventsInsCtrl.deleteInscriptionById);
 
 //
 //
 //
 //--------------- rutas de donaciones admin
 router.get("/donations", donationsCtrl.getDonations);
-router.get("/donations/:id", );
-router.post("/donations", [verifyToken, isAdmin], donationsCtrl.fileUpload, donationsCtrl.createDonations);
+router.get("/donations/:id", donationsCtrl.getDonationsById);
+router.post("/donations", [verifyToken, isUser], donationsCtrl.fileUpload, donationsCtrl.createDonations);
 router.put("/donations/:id", [verifyToken, isAdmin], donationsCtrl.fileUpload, donationsCtrl.updateDonationsById);
 router.delete("/donations/:id", [verifyToken, isAdmin], donationsCtrl.deleteDonationsById);
 
@@ -106,6 +108,14 @@ router.post("/questionary", [verifyToken, isAdmin], questionaryCtrl.createQuesti
 router.get("/questionary", [verifyToken], questionaryCtrl.getQuestionary);
 router.put("/questionary/:id", [verifyToken, isAdmin], questionaryCtrl.updateQuestionaryById);
 router.delete("/questionary/:id", [verifyToken, isAdmin], questionaryCtrl.deleteQuestionaryById);
-router.delete("/questionary", [verifyToken, isAdmin], questionaryCtrl.deleteAllQuestionary);
+
+//
+//
+//
+//--------------- rutas de puntajes
+router.post("/score", [verifyToken, isUser], scoreCtrl.createScore);
+router.get("/score", [verifyToken, isAdmin], scoreCtrl.getScore);
+router.put("/score/:id", [verifyToken, isUser], scoreCtrl.updateScoreById);
+router.delete("/score/:id", [verifyToken, isAdmin], scoreCtrl.deleteScoreById);
 
 module.exports = router;

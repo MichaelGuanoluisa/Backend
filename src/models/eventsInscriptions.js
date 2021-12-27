@@ -8,23 +8,7 @@ const InscriptionScheme = new mongoose.Schema(
             ref: "users",
             type: mongoose.Schema.Types.ObjectId
         },
-        name:{
-            type: String,
-            required: [true, 'El nombre es necesario']
-        },
-        lastname:{
-            type: String,
-            required: [true, 'El apellido es necesario']
-        },
-        email: {
-            type: String,
-            unique: true,
-            required: [true, 'El correo es necesario']
-        },
-        imgURL:{
-            type: String
-        },
-        event: [{
+        event_id: [{
             ref: "events",
             type: mongoose.Schema.Types.ObjectId
         }]
@@ -40,4 +24,4 @@ const InscriptionScheme = new mongoose.Schema(
 
 
 //UserScheme.plugin(mongoosePaginate);
-module.exports = mongoose.model("EventsInscriptions", InscriptionScheme);
+module.exports = mongoose.model("EventInscriptions", InscriptionScheme);

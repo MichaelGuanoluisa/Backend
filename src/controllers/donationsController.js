@@ -27,13 +27,18 @@ exports.createDonations = (req, res) => {
   //crear un dato album en la base de datos
 
   try {
-    const newDonations = new model({
-      name, lastName, description, type, delivery, direction, dateDelivery });
-    if (req.file && req.file.filename) {
-      newDonations.imgURL = `${req.file.filename}`;
-      newDonations.save();
-      res.send({ message: "registro de donación correctamente" });
+    if (type == "comida" || type == "ropa" || type == "dinero"){
+      const newDonations = new model({
+        name, lastName, description, type, delivery, direction, dateDelivery });
+      if (req.file && req.file.filename) {
+        newDonations.imgURL = `${req.file.filename}`;
+        newDonations.save();
+        res.send({ message: "registro de donación correctamente" });
+      }
+    }else{
+      res.status(404).send({message: "solo puede ser de 3 tipos: comida, ropa o dinero"})
     }
+    
   } catch (error) {
     res.send({ message: error });
   }

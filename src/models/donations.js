@@ -2,13 +2,9 @@ const mongoose = require('mongoose');
 
 const DonationsScheme = new mongoose.Schema(
     {
-      name: {
-        type: String,
-        required: true,
-      },
-      lastName: {
-        type: String,
-        required: true,
+      id_user: {
+        ref: "users",
+        type: mongoose.Schema.Types.ObjectId
       },
       description: {
         type: String,
@@ -20,11 +16,9 @@ const DonationsScheme = new mongoose.Schema(
       },
       delivery: {
           type: String,
-          required: true
       },
       direction: {
-        type: String,
-        required: true
+        type: String
       },
       dateDelivery: {
         type: String,
@@ -40,4 +34,4 @@ const DonationsScheme = new mongoose.Schema(
     }
   );
   
-  module.exports = mongoose.model("Donation", DonationsScheme);
+  module.exports = mongoose.model("donation", DonationsScheme);
