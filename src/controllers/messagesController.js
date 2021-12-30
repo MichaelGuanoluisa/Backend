@@ -33,9 +33,12 @@ exports.createMessages = (req, res) => {
     });
     if (req.file && req.file.filename) {
       newMessage.imgURL = `${req.file.filename}`;
-      newMessage.save();
-      res.send({ message: "registro de mensaje correctamente" });
+
+    }else{
+      newMessage.imgURL = "ifgf.png";
     }
+    newMessage.save();
+    res.send({ message: "registro de mensaje correctamente" });
   } catch (error) {
     res.send({ message: error });
   }
@@ -80,7 +83,9 @@ exports.deleteMessagesById = async (req, res) => {
   try {
     const id = req.params.id;
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
-    unlink(path.resolve("./uploads/" + doc.imgURL));
+    if(!doc.imgURL === "ifgf.png"){
+      unlink(path.resolve("./uploads/" + doc.imgURL));
+    }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
     res.send({ message: error });

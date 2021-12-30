@@ -36,8 +36,8 @@ exports.createInscription = async (req, res) => {
       data.user_id = decoded.id;
       
       //comprobar si existen usuarios ya registrados en un evento
-      docs = await inscription.find({user_id: parseId(decoded.id), event_id: parseId(data.event_id)});
-      if(docs) return res.status(403).send({message: "usuario ya registrado al evento"})
+      docs = await inscription.find({event_id: parseId(data.event_id)});
+      if(docs.user_id === data.user_id) return res.status(403).send({message: "usuario ya registrado al evento"})
 
       inscription.create(data, (err, docs) => {
         if (err) {

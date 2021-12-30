@@ -29,7 +29,7 @@ exports.createEvents = async (req, res) => {
       data.imgURL = req.file.filename;
       console.log("si existe el url");
     } else {
-      data.imgURL = "prueba.png";
+      data.imgURL = "ifgf.png";
     }
 
     eventModel.create(data, (err, docs) => {
@@ -87,7 +87,9 @@ exports.deleteEventsById = async (req, res) => {
   try {
     const id = req.params.id;
     const doc = await eventModel.findOneAndDelete({ _id: parseId(id) });
-    unlink(path.resolve("./uploads/" + doc.imgURL));
+    if(!doc.imgURL === "ifgf.png"){
+      unlink(path.resolve("./uploads/" + doc.imgURL));
+    }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
     res.send({ message: error });

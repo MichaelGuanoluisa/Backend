@@ -27,17 +27,21 @@ exports.createNews = (req, res) => {
   //crear un dato noticia en la base de datos
 
   try {
+
     const newNews = new model({
       title,
       description,
     });
+
     if (req.file && req.file.filename) {
       newNews.imgURL = `${req.file.filename}`;
-      newNews.save();
-      res.send({ message: "registro de noticias realizado con exito" });
+
     } else {
-      res.send({ message: "no existe imagen" });
+      newNews.imgURL = "ifgf.png";
     }
+    newNews.save();
+    res.send({ message: "registro de donación correctamente" });
+
   } catch (error) {
     res.send({ message: error });
   }
@@ -63,16 +67,20 @@ exports.updateNewsById = async (req, res) => {
   const id = req.params.id;
   const newNews = req.body;
   try {
+
     const notice = await model.findById({ _id: parseId(id) });
+
     if (req.file && req.file.filename) {
       newNews.imgURL = req.file.filename;
-      unlink(path.resolve("./uploads/" + doc.imgURL));
+      unlink(path.resolve("./uploads/" + notice.imgURL));
     } else {
       newNews.imgURL = notice.imgURL;
     }
+
     model.updateOne({ _id: parseId(id) }, newNews, (err, docs) => {
       res.send({ message: "Noticia actualizada correctamente" });
     });
+    
   } catch (error) {
     res.send({ message: error });
   }
@@ -82,7 +90,9 @@ exports.deleteNewsById = async (req, res) => {
   try {
     const id = req.params.id;
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
-    unlink(path.resolve("./uploads/" + doc.imgURL));
+    if(!doc.imgURL === "ifgf.png"){
+      unlink(path.resolve("./uploads/" + doc.imgURL));
+    }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
     res.send({ message: error });

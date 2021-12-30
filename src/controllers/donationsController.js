@@ -27,14 +27,20 @@ exports.createDonations = (req, res) => {
   //crear un dato album en la base de datos
 
   try {
+
     if (type == "comida" || type == "ropa" || type == "dinero"){
+
       const newDonations = new model({
         name, lastName, description, type, delivery, direction, dateDelivery });
       if (req.file && req.file.filename) {
         newDonations.imgURL = `${req.file.filename}`;
-        newDonations.save();
-        res.send({ message: "registro de donación correctamente" });
+      }else{
+        newDonations.imgURL = "ifgf.png";
       }
+
+      newDonations.save();
+      res.send({ message: "registro de donación correctamente" });
+
     }else{
       res.status(404).send({message: "solo puede ser de 3 tipos: comida, ropa o dinero"})
     }
@@ -83,7 +89,9 @@ exports.deleteDonationsById = async (req, res) => {
   try {
     const id = req.params.id;
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
-    unlink(path.resolve("./uploads/" + doc.imgURL));
+    if(!doc.imgURL === "ifgf.png"){
+      unlink(path.resolve("./uploads/" + doc.imgURL));
+    }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
     res.send({ message: error });
