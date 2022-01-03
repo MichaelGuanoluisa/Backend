@@ -32,7 +32,7 @@ app.use(express.static("uploads"));
 //cors para todas las rutas
 app.use(
     cors({
-        origin: "x"
+        origin: "*"
     })
 );
 
