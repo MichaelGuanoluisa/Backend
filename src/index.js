@@ -30,7 +30,11 @@ app.use(express.json());
 app.use(express.static("uploads"));
 
 //cors para todas las rutas
-app.use(cors());
+app.use(
+    cors({
+        origin: "x"
+    })
+);
 
 //rutas
 app.use("/api", homeRoutes);
