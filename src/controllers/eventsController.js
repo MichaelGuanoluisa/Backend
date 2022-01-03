@@ -25,6 +25,10 @@ exports.createEvents = async (req, res) => {
 
   try {
     const data = req.body;
+
+    const doc = await model.findOne({title: data.title})
+    if(doc) return res.send({message: "El evento ya existe"}, 400)
+
     if (req.file && req.file.filename) {
       data.imgURL = req.file.filename;
       console.log("si existe el url");
@@ -35,40 +39,60 @@ exports.createEvents = async (req, res) => {
     eventModel.create(data, (err, docs) => {
       if (err) {
         console.log("Error", err);
-        res.send({ error: "Error" }, 422);
+        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
       } else {
-        res.send({ message: "registro de evento correctamente" });
+        res.status(201).send({ docs });
       }
     });
 
   } catch (error) {
     console.log("Error", error);
+    res.send({ error: "Error" }, 422);
   }
 
   
 };
 
-exports.getEvents = (req, res) => {
-  eventModel.find({}, (err, docs) => {
-    res.send(docs);
-  });
+exports.getEvents = async (req, res) => {
+  try {
+
+    const docs = await model.find({});
+    if (docs == null) {
+      res.status(204).send({});
+    } else {
+      res.status(204).send(docs);
+    }
+
+  } catch (error) {
+    res.send({ message: error }, 500);
+  }
 };
 
 exports.getEventsById = async (req, res) => {
-  const id = req.params.id;
-  const news = await eventModel.findById({ _id: parseId(id) });
-  if (news == null) {
-    res.status(200).send("null");
-  } else {
-    res.status(200).send(news);
+  try {
+
+    const id = req.params.id;
+    const doc = await model.findById({ _id: parseId(id) });
+    if (doc == null) {
+      res.status(204).send({});
+    } else {
+      res.status(204).send(doc);
+    }
+
+  } catch (error) {
+    res.send({ message: error }, 500);
   }
 };
 
 exports.updateEventsById = async (req, res) => {
-  const id = req.params.id;
-  const body = req.body;
+
   try {
+    const id = req.params.id;
+    const body = req.body;
+
     const event = await eventModel.findById({ _id: parseId(id) });
+    if(!event) return res.send({message: "El evento que desea actualizar no existe"}, 400)
+
     if (req.file && req.file.filename) {
       body.imgURL = req.file.filename;
       unlink(path.resolve("./uploads/" + event.imgURL));
@@ -76,10 +100,15 @@ exports.updateEventsById = async (req, res) => {
       body.imgURL = event.imgURL;
     }
     await eventModel.updateOne({ _id: parseId(id) }, body, (err, docs) => {
-      res.send({ message: "Evento actualizado correctamente" });
+      if (err) {
+        console.log("Error", err);
+        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+      } else {
+      res.send({docs}, 201);
+      }
     });
   } catch (error) {
-    res.send({ message: error });
+    res.send({ message: error }, 500);
   }
 };
 
@@ -87,12 +116,14 @@ exports.deleteEventsById = async (req, res) => {
   try {
     const id = req.params.id;
     const doc = await eventModel.findOneAndDelete({ _id: parseId(id) });
-    if(!doc.imgURL === "ifgf.png"){
+    if(!doc) return res.send({message: "El evento que desea borrar no existe"}, 400)
+
+    if(doc.imgURL != "ifgf.png"){
       unlink(path.resolve("./uploads/" + doc.imgURL));
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
-    res.send({ message: error });
+    res.send({ message: error }, 500);
   }
 };
 

@@ -21,68 +21,93 @@ exports.fileUpload = (req, res, next) => {
   });
 };
 
-exports.createNews = (req, res) => {
-  const data = req.body;
-  const { title, description, imgURL } = data;
-  //crear un dato noticia en la base de datos
-
+exports.createNews = async (req, res) => {
+  
   try {
 
-    const newNews = new model({
-      title,
-      description,
-    });
+    const doc = await model.findOne({title: data.title})
+    if(doc) return res.send({message: "La noticia ya existe"}, 400)
 
+    const data = req.body;
     if (req.file && req.file.filename) {
-      newNews.imgURL = `${req.file.filename}`;
+
+      data.imgURL = `${req.file.filename}`;
 
     } else {
-      newNews.imgURL = "ifgf.png";
+      data.imgURL = "ifgf.png";
     }
-    newNews.save();
-    res.send({ message: "registro de donación correctamente" });
+    await model.create(data, (err, docs) => {
+      if (err) {
+        console.log("Error", err);
+        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+      } else {
+        res.status(201).send({ docs });
+      }
+    });
 
   } catch (error) {
-    res.send({ message: error });
+    res.send({ message: error }, 500);
   }
 };
 
-exports.getNews = (req, res) => {
-  model.find({}, (err, docs) => {
-    res.send(docs);
-  });
+exports.getNews = async (req, res) => {
+  try {
+
+    const news = await model.find({});
+    if (news == null) {
+      res.status(204).send({});
+    } else {
+      res.status(204).send(news);
+    }
+
+  } catch (error) {
+    res.send({ message: error }, 500);
+  }
 };
 
 exports.getNewsById = async (req, res) => {
-  const id = req.params.id;
-  const news = await model.findById({ _id: parseId(id) });
-  if (news == null) {
-    res.status(200).send("null");
-  } else {
-    res.status(200).send(news);
+  try {
+
+    const id = req.params.id;
+    const news = await model.findById({ _id: parseId(id) });
+    if (news == null) {
+      res.status(204).send({});
+    } else {
+      res.status(204).send(news);
+    }
+
+  } catch (error) {
+    res.send({ message: error }, 500);
   }
 };
 
 exports.updateNewsById = async (req, res) => {
-  const id = req.params.id;
-  const newNews = req.body;
+  
   try {
+    const id = req.params.id;
+    const news = req.body;
 
-    const notice = await model.findById({ _id: parseId(id) });
+    const doc = await model.findById({ _id: parseId(id) });
+    if(!doc) return res.send({message: "La noticia no existe"}, 400)
 
     if (req.file && req.file.filename) {
-      newNews.imgURL = req.file.filename;
-      unlink(path.resolve("./uploads/" + notice.imgURL));
+      news.imgURL = req.file.filename;
+      unlink(path.resolve("./uploads/" + doc.imgURL));
     } else {
-      newNews.imgURL = notice.imgURL;
+      news.imgURL = notice.imgURL;
     }
 
-    model.updateOne({ _id: parseId(id) }, newNews, (err, docs) => {
-      res.send({ message: "Noticia actualizada correctamente" });
+    await model.updateOne({ _id: parseId(id) }, news, (err, doc) => {
+      if (err) {
+        console.log("Error", err);
+        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+      } else {
+      res.send({doc}, 201);
+      }
     });
     
   } catch (error) {
-    res.send({ message: error });
+    res.send({ message: error }, 500);
   }
 };
 
@@ -90,11 +115,13 @@ exports.deleteNewsById = async (req, res) => {
   try {
     const id = req.params.id;
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
-    if(!doc.imgURL === "ifgf.png"){
+    if(!doc) return res.send({message: "La noticia no existe"}, 400)
+
+    if(doc.imgURL != "ifgf.png"){
       unlink(path.resolve("./uploads/" + doc.imgURL));
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
-    res.send({ message: error });
+    res.send({ message: error }, 500);
   }
 };
