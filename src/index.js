@@ -19,7 +19,7 @@ app.use(morgan("dev"));
 //cors para todas las rutas
 app.use(
   cors({
-    origin: "http://127.0.01:3000",
+    origin: "http://127.0.0.1:3000",
   })
 );
 
