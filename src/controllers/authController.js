@@ -2,6 +2,7 @@ const User = require("../models/users");
 const Role = require("../models/role");
 const jwt = require("jsonwebtoken");
 const res = require("express/lib/response");
+const {httpError} = require("../helpers/handleError")
 //const config = require('../config');
 
 
@@ -36,44 +37,48 @@ exports.register = async (req, res) => {
       res.send({message: "Este usuario ya esta registrado"})
     }
     
-  } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({ errors: ["Ocurrio algun error"] });
+  } catch (e) {
+    httpError(res, e);
   }
 
 };
 
 exports.login = async (req, res) => {
 
-  const user = await User.findOne({ email: req.body.email });
+  try {
+    
+    const user = await User.findOne({ email: req.body.email });
 
-  if (!user){
-    return res.status(404).send({message: "usuario no encontrado" });
+    if (!user){
+      return res.status(404).send({message: "usuario no encontrado" });
+    }
+
+    const roles = await Role.find({ _id: { $in: user.roles } });
+    const roleName = await roles[0].name;
+
+    const matchPassword = await User.comparePassword(
+      req.body.password,
+      user.password
+    );
+
+    if (!matchPassword){
+      return res.status(401).send({ message: "Contraseña incorrecta" });
+    }
+
+    req.token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+      expiresIn: 86400, //24h
+    });
+
+
+    return res.send(
+      { token: req.token,
+        user: user,
+      role: roleName}
+    );
+
+  } catch (e) {
+    httpError(res, e);
   }
-
-  const roles = await Role.find({ _id: { $in: user.roles } });
-  const roleName = await roles[0].name;
-
-  const matchPassword = await User.comparePassword(
-    req.body.password,
-    user.password
-  );
-
-  if (!matchPassword){
-    return res.status(401).send({ message: "Contraseña incorrecta" });
-  }
-
-  req.token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
-    expiresIn: 86400, //24h
-  });
-
-
-  return res.send(
-    { token: req.token,
-      user: user,
-    role: roleName}
-  );
 };
 
 exports.me = async (req, res) => {
@@ -118,7 +123,7 @@ exports.decoded = (token) => {
     }
     return decoded = jwt.verify(token, process.env.SECRET_KEY);
   } catch (error) {
-    return res.status(500).send({message: error})
+    httpError(res, e);
   } 
   
 }

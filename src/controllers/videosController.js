@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { httpError } = require("../helpers/handleError");
 const model = require("../models/videos");
 
 const parseId = (id) => {
@@ -6,14 +7,16 @@ const parseId = (id) => {
 };
 
 exports.createVideos = async (req, res) => {
-
   try {
     const data = req.body;
 
-    if(data.type == "niños" || data.type == "jovenes" || data.type == "general"){
-
-      const doc = await model.findOne({url: data.url})
-      if(doc) return res.send({message: "El video ya existe"}, 400)
+    if (
+      data.type == "niños" ||
+      data.type == "jovenes" ||
+      data.type == "general"
+    ) {
+      const doc = await model.findOne({ url: data.url });
+      if (doc) return res.send({ message: "El video ya existe" }, 400);
 
       await model.create(data, (err, docs) => {
         if (err) {
@@ -23,36 +26,31 @@ exports.createVideos = async (req, res) => {
           res.status(201).send({ docs });
         }
       });
-
-    }else{
-      res.status(404).send({message: "solo puede ser de 3 tipos: niños, jovenes y general"})
+    } else {
+      res.status(404).send({
+        message: "solo puede ser de 3 tipos: niños, jovenes y general",
+      });
     }
-    
   } catch (error) {
-    res.status(500).send({ error: error });
-    
+    httpError(res, error);
   }
-  
 };
 
-exports.getVideos = (req, res) => {
+exports.getVideos = async (req, res) => {
   try {
-
     const docs = await model.find({});
     if (docs == null) {
       res.status(204).send({});
     } else {
       res.status(204).send(docs);
     }
-
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error);
   }
 };
 
 exports.getVideosById = async (req, res) => {
   try {
-
     const id = req.params.id;
     const doc = await model.findById({ _id: parseId(id) });
     if (doc == null) {
@@ -60,9 +58,8 @@ exports.getVideosById = async (req, res) => {
     } else {
       res.status(204).send(doc);
     }
-
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error);
   }
 };
 
@@ -72,40 +69,42 @@ exports.updateVideosById = async (req, res) => {
     const body = req.body;
 
     const video = await model.findById({ _id: parseId(id) });
-    if(!video) return res.send({message: "El video que desea actualizar no existe"}, 400)
+    if (!video)
+      return res.send(
+        { message: "El video que desea actualizar no existe" },
+        400
+      );
 
     await model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
       if (err) {
         console.log("Error", err);
         res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
       } else {
-      res.send({docs}, 201);
+        res.send({ docs }, 201);
       }
     });
-    
   } catch (error) {
-    res.send({ message: error }, 500);
-
+    httpError(res, error);
   }
 };
 
-exports.deleteVideosById = (req, res) => {
+exports.deleteVideosById = async (req, res) => {
   try {
     const id = req.params.id;
-    
+
     const video = await model.findById({ _id: parseId(id) });
-    if(!video) return res.send({message: "El video que desea borrar no existe"}, 400)
+    if (!video)
+      return res.send({ message: "El video que desea borrar no existe" }, 400);
 
     model.deleteOne({ _id: parseId(id) }, (err, docs) => {
       if (err) {
         console.log("Error", err);
         res.send({ error: "error" }, 422);
       } else {
-      res.send({docs}, 201);
+        res.send({ docs }, 201);
       }
     });
-
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error);
   }
 };

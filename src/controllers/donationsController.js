@@ -3,6 +3,7 @@ const model = require("../models/donations");
 const multer = require("multer");
 const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
+const {httpError} = require("../helpers/handleError")
 const path = require("path");
 
 const parseId = (id) => {
@@ -48,11 +49,12 @@ exports.createDonations = async (req, res) => {
     }
     
   } catch (error) {
-    res.send({ message: error });
+    httpError(res, error)
+
   }
 };
 
-exports.getDonations = (req, res) => {
+exports.getDonations = async (req, res) => {
   try {
 
     const docs = await model.find({});
@@ -79,7 +81,8 @@ exports.getDonationsById = async (req, res) => {
     }
 
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error)
+
   }
 };
 
@@ -109,7 +112,8 @@ exports.updateDonationsById = async (req, res) => {
     });
     
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error)
+
   }
 };
 
@@ -124,6 +128,7 @@ exports.deleteDonationsById = async (req, res) => {
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error)
+
   }
 };

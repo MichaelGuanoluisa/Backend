@@ -3,6 +3,7 @@ const model = require("../models/messages");
 const multer = require("multer");
 const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
+const {httpError} = require("../helpers/handleError")
 const path = require("path");
 
 const parseId = (id) => {
@@ -45,7 +46,8 @@ exports.createMessages = async (req, res) => {
     });
 
   } catch (error) {
-    res.send({ error: "Error" }, 500);
+    httpError(res, error)
+
   }
 };
 
@@ -60,7 +62,8 @@ exports.getMessages = async (req, res) => {
     }
 
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error)
+
   }
 };
 
@@ -76,7 +79,8 @@ exports.getMessagesById = async (req, res) => {
     }
 
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error)
+
   }
 };
 
@@ -106,7 +110,8 @@ exports.updateMessagesById = async (req, res) => {
     });
 
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error)
+
   }
 };
 
@@ -121,6 +126,7 @@ exports.deleteMessagesById = async (req, res) => {
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error)
+
   }
 };

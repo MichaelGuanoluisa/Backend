@@ -6,7 +6,8 @@ const ScoreScheme = new mongoose.Schema(
     {
         user_id: {
             ref: "users",
-            type: mongoose.Schema.Types.ObjectId
+            type: mongoose.Schema.Types.ObjectId,
+            required: true
         },
         nickname: {
             type: String,
@@ -14,7 +15,8 @@ const ScoreScheme = new mongoose.Schema(
         },
         questionary_name: {
             ref: "questionary",
-            type: mongoose.Schema.Types.String
+            type: mongoose.Schema.Types.String,
+            required: true
         },
         score:{
             type: String,

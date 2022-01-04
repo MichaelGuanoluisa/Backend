@@ -1,59 +1,87 @@
 const mongoose = require("mongoose");
 const model = require("../models/score");
 const auth = require("./authController");
-const userModel = require("../models/users");
+const { httpError } = require("../helpers/handleError");
 
 const parseId = (id) => {
   return mongoose.Types.ObjectId(id);
 };
 
 exports.createScore = async (req, res) => {
-  const data = req.body;
-  const token = req.headers["x-access-token"];
   try {
+    const data = req.body;
+    const token = req.headers["x-access-token"];
+
     const decode = auth.decoded(token);
     //const user = await userModel.findById(decode.id, { password: 0 })
-    data.user_id = decode.id
+    data.user_id = decode.id;
 
-        await model.create(data, (err, docs) => {
-            res.status(201).send({message: "puntaje creado correctamente"});
-          });
-        
-    
+    await model.create(data, (err, docs) => {
+      res.status(201).send({ message: "puntaje creado correctamente" });
+    });
   } catch (error) {
-    res.status(500).send({ error: error });
-    
+    httpError(res, error);
   }
-  
 };
 
-exports.getScore = (req, res) => {
-  model.find({}, (err, docs) => {
-    res.send(docs);
-  });
+exports.getScore = async (req, res) => {
+  try {
+    const scores = await model.find({});
+    if (scores == null) {
+      res.status(204).send({});
+    } else {
+      res.status(204).send(scores);
+    }
+  } catch (error) {
+    httpError(res, error);
+  }
 };
 
 exports.getScoreById = async (req, res) => {
-  const id = req.params.id;
-  const news = await model.findById({ _id: parseId(id) });
-  if (news == null) {
-    res.status(200).send("null");
-  } else {
-    res.status(200).send(news);
+  try {
+    const id = req.params.id;
+    const score = await model.findById({ _id: parseId(id) });
+    if (score == null) {
+      res.status(204).send({});
+    } else {
+      res.status(204).send(score);
+    }
+  } catch (error) {
+    httpError(res, error);
   }
 };
 
-exports.updateScoreById = (id, data) => {
+exports.updateScoreById = async (req, res) => {
   //const { id } = req.params
-  model.updateOne({ _id: parseId(id) }, data, (err, docs) => {
-    res.send({message: "se actualizo correctamente"});
-  });
+  try {
+    const id = req.params.id;
+    const data = req.body;
+
+    const doc = await model.findById({ _id: parseId(id) });
+    if (!doc) return res.send({ message: "La registro no existe" }, 400);
+
+    model.updateOne({ _id: parseId(id) }, data, (err, docs) => {
+      if (err) {
+        console.log("Error", err);
+        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+      } else {
+        res.send({ doc }, 201);
+      }
+    });
+  } catch (error) {
+    httpError(res, error);
+  }
 };
 
-exports.deleteScoreById = (req, res) => {
-  const id = req.params.id;
-  //const { id } = req.params
-  model.deleteOne({ _id: parseId(id) }, (err, docs) => {
-    res.send(docs);
-  });
+exports.deleteScoreById = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const doc = await model.findOneAndDelete({ _id: parseId(id) });
+    if (!doc) return res.send({ message: "La noticia no existe" }, 400);
+
+    res.send({ message: "Eliminado con exito" });
+  } catch (error) {
+    httpError(res, error);
+  }
 };

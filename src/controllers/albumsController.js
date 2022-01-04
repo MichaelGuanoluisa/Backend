@@ -4,6 +4,7 @@ const multer = require("multer");
 const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
 const path = require("path");
+const { httpError } = require("../helpers/handleError");
 
 const parseId = (id) => {
   return mongoose.Types.ObjectId(id);
@@ -22,17 +23,15 @@ exports.fileUpload = (req, res, next) => {
 };
 
 exports.createAlbums = async (req, res) => {
-
   try {
     const data = req.body;
 
-    const doc = await model.findOne({title: data.title})
-    if(doc) return res.send({message: "La foto ya existe"}, 400)
-    
+    const doc = await model.findOne({ title: data.title });
+    if (doc) return res.send({ message: "La foto ya existe" }, 400);
+
     if (req.file && req.file.filename) {
       doc.imgURL = `${req.file.filename}`;
-
-    }else{
+    } else {
       doc.imgURL = "ifgf.png";
     }
 
@@ -44,22 +43,19 @@ exports.createAlbums = async (req, res) => {
         res.status(201).send({ docs });
       }
     });
-   
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, e);
   }
 };
 
-exports.getAlbums = (req, res) => {
+exports.getAlbums = async (req, res) => {
   try {
-
     const docs = await model.find({});
     if (docs == null) {
       res.status(204).send({});
     } else {
       res.status(204).send(docs);
     }
-
   } catch (error) {
     res.send({ message: error }, 500);
   }
@@ -67,7 +63,6 @@ exports.getAlbums = (req, res) => {
 
 exports.getAlbumsById = async (req, res) => {
   try {
-
     const id = req.params.id;
     const doc = await model.findById({ _id: parseId(id) });
     if (doc == null) {
@@ -75,20 +70,22 @@ exports.getAlbumsById = async (req, res) => {
     } else {
       res.status(204).send(doc);
     }
-
   } catch (error) {
     res.send({ message: error }, 500);
   }
 };
 
 exports.updateAlbumsById = async (req, res) => {
-  
   try {
     const id = req.params.id;
     const body = req.body;
 
     const album = await model.findById({ _id: parseId(id) });
-    if(!album) return res.send({message: "La foto que desea actualizar no existe"}, 400)
+    if (!album)
+      return res.send(
+        { message: "La foto que desea actualizar no existe" },
+        400
+      );
 
     if (req.file && req.file.filename) {
       body.imgURL = req.file.filename;
@@ -102,10 +99,9 @@ exports.updateAlbumsById = async (req, res) => {
         console.log("Error", err);
         res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
       } else {
-      res.send({docs}, 201);
+        res.send({ docs }, 201);
       }
     });
-
   } catch (error) {
     res.send({ message: error }, 500);
   }
@@ -115,13 +111,13 @@ exports.deleteAlbumsById = async (req, res) => {
   try {
     const id = req.params.id;
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
-    if(!doc) return res.send({message: "La foto que desea borrar no existe"}, 400)
+    if (!doc)
+      return res.send({ message: "La foto que desea borrar no existe" }, 400);
 
-    if(doc.imgURL != "ifgf.png"){
+    if (doc.imgURL != "ifgf.png") {
       unlink(path.resolve("./uploads/" + doc.imgURL));
     }
     res.send({ message: "Eliminado con exito" });
-
   } catch (error) {
     res.send({ message: error }, 500);
   }

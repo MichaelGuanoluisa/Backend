@@ -12,6 +12,7 @@ const EventsScheme = new mongoose.Schema(
     },
     imgURL: {
       type: String,
+      required: false
     },
     ubication: {
       type: String,

@@ -11,7 +11,7 @@ const MessagesScheme = new mongoose.Schema({
         },
         imgURL:{
             type: String,
-            required: true
+            required: false
         }
 
     },

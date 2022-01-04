@@ -3,6 +3,7 @@ const eventModel = require("../models/events");
 const multer = require("multer");
 const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
+const {httpError} = require("../helpers/handleError")
 const path = require("path");
 
 const parseId = (id) => {
@@ -46,8 +47,8 @@ exports.createEvents = async (req, res) => {
     });
 
   } catch (error) {
-    console.log("Error", error);
-    res.send({ error: "Error" }, 422);
+    httpError(res, error)
+
   }
 
   
@@ -64,7 +65,8 @@ exports.getEvents = async (req, res) => {
     }
 
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error)
+
   }
 };
 
@@ -80,7 +82,8 @@ exports.getEventsById = async (req, res) => {
     }
 
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error)
+
   }
 };
 
@@ -108,7 +111,8 @@ exports.updateEventsById = async (req, res) => {
       }
     });
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error)
+
   }
 };
 
@@ -123,7 +127,8 @@ exports.deleteEventsById = async (req, res) => {
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error)
+
   }
 };
 

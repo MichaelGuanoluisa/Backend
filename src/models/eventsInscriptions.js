@@ -6,11 +6,13 @@ const InscriptionScheme = new mongoose.Schema(
     {
         user_id: {
             ref: "users",
-            type: mongoose.Schema.Types.ObjectId
+            type: mongoose.Schema.Types.ObjectId, 
+            required: true
         },
         event_id: [{
             ref: "events",
-            type: mongoose.Schema.Types.ObjectId
+            type: mongoose.Schema.Types.ObjectId,
+            required: true
         }]
 
     },
