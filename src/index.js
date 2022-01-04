@@ -7,10 +7,6 @@ const cors = require("cors");
 dotenv.config();
 require("./libs/database");
 
-
-//rutas
-const homeRoutes = require("./routes");
-
 //Crear roles
 libs.createRoles();
 
@@ -20,24 +16,27 @@ const app = express();
 //Mensaje de petición
 app.use(morgan("dev"));
 
+//cors para todas las rutas
+app.use(
+  cors({
+    origin: "http://127.0.01:3000",
+  })
+);
+
+//rutas
+const routes = require("./routes");
+
 //middlewares
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
-app.use(express.json());
+app.use(bodyParser.json());
 
 //carpetas publicas
 app.use(express.static("uploads"));
 
-//cors para todas las rutas
-app.use(
-    cors({
-        origin: "*"
-    })
-);
-
 //rutas
-app.use("/api", homeRoutes);
+app.use("/api", routes);
 
 //inicialización de base de datos
 const port = process.env.PORT || 3030;
