@@ -17,11 +17,7 @@ const app = express();
 app.use(morgan("dev"));
 
 //cors para todas las rutas
-app.use(
-  cors({
-    origin: "http://127.0.0.1:3000",
-  })
-);
+app.use(cors());
 
 //rutas
 const routes = require("./routes");
