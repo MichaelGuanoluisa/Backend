@@ -68,7 +68,7 @@ const getNewsById = async (req, res) => {
     if (!news) {
       res.status(204).send({});
     } else {
-      res.status(204).send(news);
+      res.status(200).send(news);
     }
   } catch (error) {
     httpError(res, error);
@@ -81,7 +81,11 @@ const updateNewsById = async (req, res) => {
     const news = req.body;
 
     const doc = await model.findById({ _id: parseId(id) });
-    if (!doc) return res.send({ message: "La noticia no existe" }, 400);
+    if (!doc)
+      return res.send(
+        { message: "La noticia que desea actualizar no existe" },
+        204
+      );
 
     if (req.file && req.file.filename) {
       news.imgURL = req.file.filename;
@@ -95,7 +99,7 @@ const updateNewsById = async (req, res) => {
         console.log("Error", err);
         res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
       } else {
-        res.send({ doc }, 201);
+        res.status(200).send(doc);
       }
     });
   } catch (error) {
@@ -107,7 +111,11 @@ const deleteNewsById = async (req, res) => {
   try {
     const id = req.params.id;
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
-    if (!doc) return res.send({ message: "La noticia no existe" }, 400);
+    if (!doc)
+      return res.send(
+        { message: "La noticia que desea eliminar no existe" },
+        204
+      );
 
     if (doc.imgURL != "ifgf.png") {
       unlink(path.resolve("./uploads/" + doc.imgURL));

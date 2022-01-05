@@ -25,10 +25,10 @@ exports.createQuestionary = (req, res) => {
 exports.getQuestionary = async (req, res) => {
   try {
     const docs = await model.find({});
-    if (docs == null) {
+    if (!docs) {
       res.status(204).send({});
     } else {
-      res.status(204).send(docs);
+      res.status(200).send(docs);
     }
   } catch (error) {
     httpError(res, error);
@@ -55,7 +55,7 @@ exports.updateQuestionaryById = async (req, res) => {
     if (!question)
       return res.send(
         { message: "La pregunta que desea actualizar no existe" },
-        400
+        204
       );
 
     await model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
@@ -63,7 +63,7 @@ exports.updateQuestionaryById = async (req, res) => {
         console.log("Error", err);
         res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
       } else {
-        res.send({ docs }, 201);
+        res.send({ docs }, 200);
       }
     });
   } catch (error) {
@@ -79,7 +79,7 @@ exports.deleteQuestionaryById = async (req, res) => {
     if (!doc)
       return res.send(
         { message: "La pregunta que desea borrar no existe" },
-        400
+        204
       );
 
     res.send({ message: "Eliminado con exito" });
@@ -91,6 +91,9 @@ exports.deleteQuestionaryById = async (req, res) => {
 exports.deleteAllQuestionary = (req, res) => {
   try {
     model.deleteMany({}, (err, docs) => {
+      if (!docs) {
+        res.status(204).send({});
+      }
       res.send(docs);
     });
   } catch (error) {

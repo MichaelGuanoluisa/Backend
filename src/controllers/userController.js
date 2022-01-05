@@ -12,17 +12,16 @@ exports.createUsers = (req, res) => {
       console.log("Error", err);
       res.status(422).send({ error: "Error" });
     } else {
-      res.status(201).send({ data: docs });
+      res.status(201).send(docs);
     }
   });
 };
 
-
 exports.getUsersById = async (req, res) => {
   const id = req.params.id;
   const user = await model.findById({ _id: parseId(id) });
-  if (user == null) {
-    res.status(200).send("null");
+  if (!user) {
+    res.status(204).send({});
   } else {
     res.status(200).send(user);
   }

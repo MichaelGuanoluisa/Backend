@@ -3,7 +3,7 @@ const model = require("../models/donations");
 const multer = require("multer");
 const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
-const {httpError} = require("../helpers/handleError")
+const { httpError } = require("../helpers/handleError");
 const path = require("path");
 
 const parseId = (id) => {
@@ -23,15 +23,13 @@ exports.fileUpload = (req, res, next) => {
 };
 
 exports.createDonations = async (req, res) => {
-
   try {
     const data = req.body;
 
-    if (data.type == "comida" || data.type == "ropa" || data.type == "dinero"){
-
+    if (data.type == "comida" || data.type == "ropa" || data.type == "dinero") {
       if (req.file && req.file.filename) {
         data.imgURL = `${req.file.filename}`;
-      }else{
+      } else {
         data.imgURL = "ifgf.png";
       }
 
@@ -40,30 +38,27 @@ exports.createDonations = async (req, res) => {
           console.log("Error", err);
           res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
         } else {
-          res.status(201).send({ doc });
+          res.status(201).send(doc);
         }
       });
-
-    }else{
-      res.status(404).send({message: "solo puede ser de 3 tipos: comida, ropa o dinero"})
+    } else {
+      res
+        .status(404)
+        .send({ message: "solo puede ser de 3 tipos: comida, ropa o dinero" });
     }
-    
   } catch (error) {
-    httpError(res, error)
-
+    httpError(res, error);
   }
 };
 
 exports.getDonations = async (req, res) => {
   try {
-
     const docs = await model.find({});
-    if (docs == null) {
+    if (!docs) {
       res.status(204).send({});
     } else {
-      res.status(204).send(docs);
+      res.status(200).send(docs);
     }
-
   } catch (error) {
     res.send({ message: error }, 500);
   }
@@ -71,29 +66,29 @@ exports.getDonations = async (req, res) => {
 
 exports.getDonationsById = async (req, res) => {
   try {
-
     const id = req.params.id;
     const doc = await model.findById({ _id: parseId(id) });
-    if (doc == null) {
+    if (!doc) {
       res.status(204).send({});
     } else {
-      res.status(204).send(doc);
+      res.status(200).send(doc);
     }
-
   } catch (error) {
-    httpError(res, error)
-
+    httpError(res, error);
   }
 };
 
 exports.updateDonationsById = async (req, res) => {
-
   try {
     const id = req.params.id;
     const body = req.body;
 
     const donation = await model.findById({ _id: parseId(id) });
-    if(!donation) return res.send({message: "La donacion que desea actualizar no existe"}, 400)
+    if (!donation)
+      return res.send(
+        { message: "La donacion que desea actualizar no existe" },
+        204
+      );
 
     if (req.file && req.file.filename) {
       body.imgURL = req.file.filename;
@@ -102,18 +97,16 @@ exports.updateDonationsById = async (req, res) => {
       body.imgURL = donation.imgURL;
     }
 
-    model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
+    model.updateOne({ _id: parseId(id) }, body, (err, doc) => {
       if (err) {
         console.log("Error", err);
         res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
       } else {
-      res.send({docs}, 201);
+        res.status(200).send(doc);
       }
     });
-    
   } catch (error) {
-    httpError(res, error)
-
+    httpError(res, error);
   }
 };
 
@@ -121,14 +114,17 @@ exports.deleteDonationsById = async (req, res) => {
   try {
     const id = req.params.id;
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
-    if(!doc) return res.send({message: "La donacion que desea borrar no existe"}, 400)
+    if (!doc)
+      return res.send(
+        { message: "La donacion que desea borrar no existe" },
+        200
+      );
 
-    if(doc.imgURL != "ifgf.png"){
+    if (doc.imgURL != "ifgf.png") {
       unlink(path.resolve("./uploads/" + doc.imgURL));
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
-    httpError(res, error)
-
+    httpError(res, error);
   }
 };

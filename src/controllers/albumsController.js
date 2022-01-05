@@ -40,7 +40,7 @@ exports.createAlbums = async (req, res) => {
         console.log("Error", err);
         res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
       } else {
-        res.status(201).send({ docs });
+        res.status(201).send(docs);
       }
     });
   } catch (error) {
@@ -51,13 +51,13 @@ exports.createAlbums = async (req, res) => {
 exports.getAlbums = async (req, res) => {
   try {
     const docs = await model.find({});
-    if (docs == null) {
+    if (!docs) {
       res.status(204).send({});
     } else {
-      res.status(204).send(docs);
+      res.status(200).send(docs);
     }
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, e);
   }
 };
 
@@ -65,13 +65,13 @@ exports.getAlbumsById = async (req, res) => {
   try {
     const id = req.params.id;
     const doc = await model.findById({ _id: parseId(id) });
-    if (doc == null) {
+    if (!doc) {
       res.status(204).send({});
     } else {
-      res.status(204).send(doc);
+      res.status(200).send(doc);
     }
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, e);
   }
 };
 
@@ -84,7 +84,7 @@ exports.updateAlbumsById = async (req, res) => {
     if (!album)
       return res.send(
         { message: "La foto que desea actualizar no existe" },
-        400
+        204
       );
 
     if (req.file && req.file.filename) {
@@ -94,16 +94,16 @@ exports.updateAlbumsById = async (req, res) => {
       body.imgURL = album.imgURL;
     }
 
-    await model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
+    await model.updateOne({ _id: parseId(id) }, body, (err, doc) => {
       if (err) {
         console.log("Error", err);
         res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
       } else {
-        res.send({ docs }, 201);
+        res.status(200).send(doc);
       }
     });
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, e);
   }
 };
 
@@ -112,13 +112,13 @@ exports.deleteAlbumsById = async (req, res) => {
     const id = req.params.id;
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
     if (!doc)
-      return res.send({ message: "La foto que desea borrar no existe" }, 400);
+      return res.send({ message: "La foto que desea borrar no existe" }, 204);
 
     if (doc.imgURL != "ifgf.png") {
       unlink(path.resolve("./uploads/" + doc.imgURL));
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, e);
   }
 };

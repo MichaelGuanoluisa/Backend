@@ -23,7 +23,7 @@ exports.createVideos = async (req, res) => {
           console.log("Error", err);
           res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
         } else {
-          res.status(201).send({ docs });
+          res.status(201).send(docs);
         }
       });
     } else {
@@ -39,10 +39,10 @@ exports.createVideos = async (req, res) => {
 exports.getVideos = async (req, res) => {
   try {
     const docs = await model.find({});
-    if (docs == null) {
+    if (!docs) {
       res.status(204).send({});
     } else {
-      res.status(204).send(docs);
+      res.status(200).send(docs);
     }
   } catch (error) {
     httpError(res, error);
@@ -53,10 +53,10 @@ exports.getVideosById = async (req, res) => {
   try {
     const id = req.params.id;
     const doc = await model.findById({ _id: parseId(id) });
-    if (doc == null) {
+    if (!doc) {
       res.status(204).send({});
     } else {
-      res.status(204).send(doc);
+      res.status(200).send(doc);
     }
   } catch (error) {
     httpError(res, error);
@@ -72,15 +72,15 @@ exports.updateVideosById = async (req, res) => {
     if (!video)
       return res.send(
         { message: "El video que desea actualizar no existe" },
-        400
+        204
       );
 
-    await model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
+    await model.updateOne({ _id: parseId(id) }, body, (err, doc) => {
       if (err) {
         console.log("Error", err);
         res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
       } else {
-        res.send({ docs }, 201);
+        res.status(200).send(doc);
       }
     });
   } catch (error) {
@@ -94,14 +94,14 @@ exports.deleteVideosById = async (req, res) => {
 
     const video = await model.findById({ _id: parseId(id) });
     if (!video)
-      return res.send({ message: "El video que desea borrar no existe" }, 400);
+      return res.send({ message: "El video que desea borrar no existe" }, 204);
 
     model.deleteOne({ _id: parseId(id) }, (err, docs) => {
       if (err) {
         console.log("Error", err);
         res.send({ error: "error" }, 422);
       } else {
-        res.send({ docs }, 201);
+        res.status(200).send({ message: "Eliminado con exito" });
       }
     });
   } catch (error) {

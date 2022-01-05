@@ -27,10 +27,10 @@ exports.createScore = async (req, res) => {
 exports.getScore = async (req, res) => {
   try {
     const scores = await model.find({});
-    if (scores == null) {
+    if (!scores) {
       res.status(204).send({});
     } else {
-      res.status(204).send(scores);
+      res.status(200).send(scores);
     }
   } catch (error) {
     httpError(res, error);
@@ -58,14 +58,14 @@ exports.updateScoreById = async (req, res) => {
     const data = req.body;
 
     const doc = await model.findById({ _id: parseId(id) });
-    if (!doc) return res.send({ message: "La registro no existe" }, 400);
+    if (!doc) return res.send({ message: "La registro no existe" }, 204);
 
-    model.updateOne({ _id: parseId(id) }, data, (err, docs) => {
+    model.updateOne({ _id: parseId(id) }, data, (err, doc) => {
       if (err) {
         console.log("Error", err);
         res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
       } else {
-        res.send({ doc }, 201);
+        res.status(200).send(doc);
       }
     });
   } catch (error) {
@@ -78,7 +78,11 @@ exports.deleteScoreById = async (req, res) => {
     const id = req.params.id;
 
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
-    if (!doc) return res.send({ message: "La noticia no existe" }, 400);
+    if (!doc)
+      return res.send(
+        { message: "La puntuacion que desea borrar no existe" },
+        204
+      );
 
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
