@@ -32,6 +32,7 @@ exports.createDonations = async (req, res) => {
       } else {
         data.imgURL = "ifgf.png";
       }
+      data.status = "espera";
 
       await model.create(data, (err, doc) => {
         if (err) {

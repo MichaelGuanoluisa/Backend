@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const eventModel = require("../models/events");
+const model = require("../models/events");
 const multer = require("multer");
 const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
@@ -36,7 +36,7 @@ exports.createEvents = async (req, res) => {
       data.imgURL = "ifgf.png";
     }
 
-    eventModel.create(data, (err, docs) => {
+    model.create(data, (err, docs) => {
       if (err) {
         console.log("Error", err);
         res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
@@ -81,7 +81,7 @@ exports.updateEventsById = async (req, res) => {
     const id = req.params.id;
     const body = req.body;
 
-    const event = await eventModel.findById({ _id: parseId(id) });
+    const event = await model.findById({ _id: parseId(id) });
     if (!event)
       return res.send(
         { message: "El evento que desea actualizar no existe" },
@@ -94,7 +94,7 @@ exports.updateEventsById = async (req, res) => {
     } else {
       body.imgURL = event.imgURL;
     }
-    await eventModel.updateOne({ _id: parseId(id) }, body, (err, docs) => {
+    await model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
       if (err) {
         console.log("Error", err);
         res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
@@ -110,7 +110,7 @@ exports.updateEventsById = async (req, res) => {
 exports.deleteEventsById = async (req, res) => {
   try {
     const id = req.params.id;
-    const doc = await eventModel.findOneAndDelete({ _id: parseId(id) });
+    const doc = await model.findOneAndDelete({ _id: parseId(id) });
     if (!doc)
       return res.send({ message: "El evento que desea borrar no existe" }, 204);
 
