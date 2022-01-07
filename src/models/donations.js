@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const DonationsScheme = new mongoose.Schema(
   {
-    id_user: {
+    user_id: {
       ref: "users",
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -30,6 +30,7 @@ const DonationsScheme = new mongoose.Schema(
     status: {
       type: String,
       required: true,
+      default: "undefined",
     },
     imgURL: {
       type: String,

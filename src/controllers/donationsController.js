@@ -5,6 +5,7 @@ const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
 const { httpError } = require("../helpers/handleError");
 const path = require("path");
+const auth = require("./authController");
 
 const parseId = (id) => {
   return mongoose.Types.ObjectId(id);
@@ -25,6 +26,10 @@ exports.fileUpload = (req, res, next) => {
 exports.createDonations = async (req, res) => {
   try {
     const data = req.body;
+    const token = req.headers["x-access-token"];
+
+    const decoded = auth.decoded(token);
+    data.user_id = decoded.id;
 
     if (data.type == "comida" || data.type == "ropa" || data.type == "dinero") {
       if (req.file && req.file.filename) {
@@ -32,7 +37,6 @@ exports.createDonations = async (req, res) => {
       } else {
         data.imgURL = "ifgf.png";
       }
-      data.status = "undefined";
 
       await model.create(data, (err, doc) => {
         if (err) {
