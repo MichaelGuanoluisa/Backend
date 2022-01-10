@@ -44,7 +44,7 @@ exports.createAlbums = async (req, res) => {
       }
     });
   } catch (error) {
-    httpError(res, e);
+    httpError(res, error);
   }
 };
 
@@ -57,7 +57,7 @@ exports.getAlbums = async (req, res) => {
       res.status(200).send(docs);
     }
   } catch (error) {
-    httpError(res, e);
+    httpError(res, error);
   }
 };
 
@@ -71,7 +71,7 @@ exports.getAlbumsById = async (req, res) => {
       res.status(200).send(doc);
     }
   } catch (error) {
-    httpError(res, e);
+    httpError(res, error);
   }
 };
 
@@ -103,7 +103,7 @@ exports.updateAlbumsById = async (req, res) => {
       }
     });
   } catch (error) {
-    httpError(res, e);
+    httpError(res, error);
   }
 };
 
@@ -119,6 +119,6 @@ exports.deleteAlbumsById = async (req, res) => {
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
-    httpError(res, e);
+    httpError(res, error);
   }
 };

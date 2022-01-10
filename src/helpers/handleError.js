@@ -1,6 +1,6 @@
 const httpError = (res, err) => {
-    console.log(err)
-    res.send({error: err}, 500)
-}
+  console.log(err);
+  res.status(500).send({ error: err });
+};
 
-module.exports = { httpError }
+module.exports = { httpError };

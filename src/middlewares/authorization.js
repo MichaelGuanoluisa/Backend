@@ -20,6 +20,7 @@ exports.verifyToken = async (req, res, next) => {
     if (!user)
       return res.status(404).json({ message: "usuario no registrado" });
 
+    data = req.body;
     //si existe continua
     next();
   } catch (error) {

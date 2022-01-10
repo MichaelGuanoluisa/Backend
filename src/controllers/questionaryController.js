@@ -12,7 +12,7 @@ exports.createQuestionary = (req, res) => {
     model.create(data, (err, docs) => {
       if (err) {
         console.log("Error", err);
-        res.status(422).send({ error: "Error" });
+        res.status(422).send({ error: err });
       } else {
         res.status(201).send(docs);
       }

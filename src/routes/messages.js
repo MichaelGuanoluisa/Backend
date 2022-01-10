@@ -4,13 +4,13 @@ const messagesCtrl = require("../controllers/messagesController");
 const { verifyToken, isAdmin } = require("../middlewares/authorization");
 
 router.get("/", messagesCtrl.getMessages);
+router.get("/:id", messagesCtrl.getMessages);
 router.post(
   "/",
   [verifyToken, isAdmin],
   messagesCtrl.fileUpload,
   messagesCtrl.createMessages
 );
-router.get("/:id", messagesCtrl.getMessages);
 router.put(
   "/:id",
   [verifyToken, isAdmin],

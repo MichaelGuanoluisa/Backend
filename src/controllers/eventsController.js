@@ -25,9 +25,10 @@ exports.fileUpload = (req, res, next) => {
 exports.createEvents = async (req, res) => {
   try {
     const data = req.body;
+    console.log(data);
 
     const doc = await model.findOne({ title: data.title });
-    if (doc) return res.send({ message: "El evento ya existe" }, 400);
+    if (doc) return res.status(400).send({ message: "El evento ya existe" });
 
     if (req.file && req.file.filename) {
       data.imgURL = req.file.filename;
@@ -39,7 +40,9 @@ exports.createEvents = async (req, res) => {
     model.create(data, (err, docs) => {
       if (err) {
         console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+        res
+          .status(422)
+          .send({ error: "El formato de datos ingresado es erroneo" });
       } else {
         res.status(201).send(docs);
       }

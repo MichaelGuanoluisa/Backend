@@ -31,27 +31,21 @@ exports.createDonations = async (req, res) => {
     const decoded = auth.decoded(token);
     data.user_id = decoded.id;
 
-    if (data.type == "comida" || data.type == "ropa" || data.type == "dinero") {
-      if (req.file && req.file.filename) {
-        data.imgURL = `${req.file.filename}`;
-      } else {
-        data.imgURL = "ifgf.png";
-      }
-      data.status = "espera";
-
-      await model.create(data, (err, doc) => {
-        if (err) {
-          console.log("Error", err);
-          res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
-        } else {
-          res.status(201).send(doc);
-        }
-      });
+    if (req.file && req.file.filename) {
+      data.imgURL = `${req.file.filename}`;
     } else {
-      res
-        .status(404)
-        .send({ message: "solo puede ser de 3 tipos: comida, ropa o dinero" });
+      data.imgURL = "ifgf.png";
     }
+    data.status = "undefined";
+
+    await model.create(data, (err, doc) => {
+      if (err) {
+        console.log("Error", err);
+        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+      } else {
+        res.status(201).send(doc);
+      }
+    });
   } catch (error) {
     httpError(res, error);
   }
@@ -61,12 +55,12 @@ exports.getDonations = async (req, res) => {
   try {
     const docs = await model.find({});
     if (!docs) {
-      res.status(204).send({});
+      res.status(404).send({});
     } else {
       res.status(200).send(docs);
     }
   } catch (error) {
-    res.send({ message: error }, 500);
+    httpError(res, error);
   }
 };
 
@@ -75,7 +69,7 @@ exports.getDonationsById = async (req, res) => {
     const id = req.params.id;
     const doc = await model.findById({ _id: parseId(id) });
     if (!doc) {
-      res.status(204).send({});
+      res.status(404).send({});
     } else {
       res.status(200).send(doc);
     }
@@ -93,7 +87,7 @@ exports.updateDonationsById = async (req, res) => {
     if (!donation)
       return res.send(
         { message: "La donacion que desea actualizar no existe" },
-        204
+        404
       );
 
     if (req.file && req.file.filename) {
@@ -123,7 +117,7 @@ exports.deleteDonationsById = async (req, res) => {
     if (!doc)
       return res.send(
         { message: "La donacion que desea borrar no existe" },
-        200
+        404
       );
 
     if (doc.imgURL != "ifgf.png") {
