@@ -12,7 +12,7 @@ const AlbumsScheme = new mongoose.Schema(
     },
     imgURL: {
       type: String,
-      required: false
+      required: true,
     },
   },
   {

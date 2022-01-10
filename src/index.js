@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const libs = require("./libs/initialSetup");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const { multipartFileParser } = require("express-multipart-form-data-process");
 dotenv.config();
 require("./libs/database");
 
@@ -38,3 +39,5 @@ app.use("/api", routes);
 const port = process.env.PORT || 3030;
 app.listen(port);
 console.log("Escuchando puerto", port);
+
+module.exports = app;
