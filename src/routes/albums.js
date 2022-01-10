@@ -2,15 +2,11 @@ const express = require("express");
 const router = express.Router();
 const albumsCtrl = require("../controllers/albumsController");
 const { verifyToken, isAdmin } = require("../middlewares/authorization");
-const { validateCreate } = require("../validators/album");
-const multipart = require("connect-multiparty");
-const multipartMidd = multipart();
 
 router.get("/", albumsCtrl.getAlbums);
 router.post(
   "/",
   [verifyToken, isAdmin],
-  validateCreate,
   albumsCtrl.fileUpload,
   albumsCtrl.createAlbums
 );
