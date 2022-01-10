@@ -7,9 +7,8 @@ const { httpError } = require("../helpers/handleError");
 
 exports.register = async (req, res) => {
   //obtener datos
-  const { name, lastname, email, password, roles } = req.body;
-
   try {
+    const { name, lastname, email, password, roles } = req.body;
     const user = await User.findOne({ email: email });
 
     if (!user) {

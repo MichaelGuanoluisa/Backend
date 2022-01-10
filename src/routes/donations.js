@@ -6,12 +6,16 @@ const {
   isAdmin,
   isUser,
 } = require("../middlewares/authorization");
+const { validateCreate } = require("../validators/donation");
+const multipart = require("connect-multiparty");
+const multipartMidd = multipart();
 
 router.get("/", donationsCtrl.getDonations);
 router.get("/:id", donationsCtrl.getDonationsById);
 router.post(
   "/",
   [verifyToken, isUser],
+  validateCreate,
   donationsCtrl.fileUpload,
   donationsCtrl.createDonations
 );

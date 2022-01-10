@@ -12,7 +12,7 @@ const parseId = (id) => {
 
 const upload = multer(multerConfig).single("file");
 
-const fileUpload = (req, res, next) => {
+exports.fileUpload = (req, res, next) => {
   upload(req, res, function (error) {
     if (error) {
       res.send({ message: error });
@@ -22,13 +22,13 @@ const fileUpload = (req, res, next) => {
   });
 };
 
-const createNews = async (req, res) => {
+exports.createNews = async (req, res) => {
   try {
     const data = req.body;
     console.log(data);
 
     const doc = await model.findOne({ title: data.title });
-    if (doc) return res.send({ message: "La noticia ya existe" }, 400);
+    if (doc) return res.status(400).send({ message: "La noticia ya existe" });
 
     if (req.file && req.file.filename) {
       data.imgURL = `${req.file.filename}`;
@@ -38,7 +38,9 @@ const createNews = async (req, res) => {
     await model.create(data, (err, docs) => {
       if (err) {
         console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+        res
+          .status(422)
+          .json({ error: "El formato de datos ingresado es erroneo" });
       } else {
         res.status(201).send(docs);
       }
@@ -48,7 +50,7 @@ const createNews = async (req, res) => {
   }
 };
 
-const getNews = async (req, res) => {
+exports.getNews = async (req, res) => {
   try {
     const news = await model.find({});
     if (!news) {
@@ -61,7 +63,7 @@ const getNews = async (req, res) => {
   }
 };
 
-const getNewsById = async (req, res) => {
+exports.getNewsById = async (req, res) => {
   try {
     const id = req.params.id;
     const news = await model.findById({ _id: parseId(id) });
@@ -75,17 +77,16 @@ const getNewsById = async (req, res) => {
   }
 };
 
-const updateNewsById = async (req, res) => {
+exports.updateNewsById = async (req, res) => {
   try {
     const id = req.params.id;
     const news = req.body;
 
     const doc = await model.findById({ _id: parseId(id) });
     if (!doc)
-      return res.send(
-        { message: "La noticia que desea actualizar no existe" },
-        204
-      );
+      return res
+        .status(204)
+        .send({ message: "La noticia que desea actualizar no existe" });
 
     if (req.file && req.file.filename) {
       news.imgURL = req.file.filename;
@@ -97,7 +98,9 @@ const updateNewsById = async (req, res) => {
     await model.updateOne({ _id: parseId(id) }, news, (err, doc) => {
       if (err) {
         console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+        res
+          .status(422)
+          .send({ error: "El formato de datos ingresado es erroneo" });
       } else {
         res.status(200).send(doc);
       }
@@ -107,15 +110,14 @@ const updateNewsById = async (req, res) => {
   }
 };
 
-const deleteNewsById = async (req, res) => {
+exports.deleteNewsById = async (req, res) => {
   try {
     const id = req.params.id;
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
     if (!doc)
-      return res.send(
-        { message: "La noticia que desea eliminar no existe" },
-        204
-      );
+      return res
+        .status(204)
+        .send({ message: "La noticia que desea eliminar no existe" });
 
     if (doc.imgURL != "ifgf.png") {
       unlink(path.resolve("./uploads/" + doc.imgURL));
@@ -124,13 +126,4 @@ const deleteNewsById = async (req, res) => {
   } catch (error) {
     httpError(res, error);
   }
-};
-
-module.exports = {
-  createNews,
-  getNews,
-  getNewsById,
-  updateNewsById,
-  deleteNewsById,
-  fileUpload,
 };

@@ -25,9 +25,9 @@ exports.fileUpload = (req, res, next) => {
 exports.createMessages = async (req, res) => {
   try {
     const data = req.body;
-
+    console.log(data);
     const doc = await model.findOne({ title: data.title });
-    if (doc) return res.send({ message: "El mensaje ya existe" }, 204);
+    if (doc) return res.status(400).send({ message: "El mensaje ya existe" });
 
     if (req.file && req.file.filename) {
       data.imgURL = `${req.file.filename}`;
@@ -35,10 +35,10 @@ exports.createMessages = async (req, res) => {
       data.imgURL = "ifgf.png";
     }
 
-    await model.create(data, (err, docs) => {
-      if (err) {
-        console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+    await model.create(data, (error, docs) => {
+      if (error) {
+        console.log("Error", error);
+        res.status(422).send(error);
       } else {
         res.status(201).send(docs);
       }
@@ -94,10 +94,10 @@ exports.updateMessagesById = async (req, res) => {
       body.imgURL = message.imgURL;
     }
 
-    await model.updateOne({ _id: parseId(id) }, body, (err, doc) => {
-      if (err) {
-        console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+    await model.updateOne({ _id: parseId(id) }, body, (error, doc) => {
+      if (error) {
+        console.log("Error", error);
+        res.status(422).send(error);
       } else {
         res.status(200).send(doc);
       }
