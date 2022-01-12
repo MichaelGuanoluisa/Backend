@@ -21,9 +21,18 @@ exports.getUsersById = async (req, res) => {
   const id = req.params.id;
   const user = await model.findById({ _id: parseId(id) });
   if (!user) {
-    res.status(204).send({});
+    res.status(404).send({});
   } else {
     res.status(200).send(user);
+  }
+};
+
+exports.getUsers = async (req, res) => {
+  const users = await model.find({});
+  if (!users) {
+    res.status(404).send({});
+  } else {
+    res.status(200).send(users);
   }
 };
 

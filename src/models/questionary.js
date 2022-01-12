@@ -13,16 +13,16 @@ const QuestionaryScheme = new mongoose.Schema(
             type: String,
             required: true,
           },
-          opcionA: { type: String, required: true },
-          opcionB: {
+          optionA: { type: String, required: true },
+          optionB: {
             type: String,
             required: true,
           },
-          opcionC: {
+          optionC: {
             type: String,
             required: true,
           },
-          opcionD: { type: String, required: true },
+          optionD: { type: String, required: true },
           answer: { type: String, required: true },
         },
         required: true,

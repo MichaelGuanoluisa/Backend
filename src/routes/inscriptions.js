@@ -7,9 +7,8 @@ const {
 } = require("../middlewares/authorization");
 const eventsInsCtrl = require("../controllers/eventsInscriptionController");
 
-router.post("/", [verifyToken, isUser], eventsInsCtrl.createInscription);
+router.post("/:id", [verifyToken, isUser], eventsInsCtrl.createInscription);
 router.get("/", [verifyToken, isUser], eventsInsCtrl.getInscriptions);
-router.get("/all", [verifyToken, isAdmin], eventsInsCtrl.getAllInscriptions);
 router.delete(
   "/:id",
   [verifyToken, isUser],
