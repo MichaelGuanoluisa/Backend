@@ -27,7 +27,7 @@ exports.createAlbums = async (req, res) => {
     const data = req.body;
 
     const doc = await model.findOne({ title: data.title });
-    if (doc) return res.send({ message: "La foto ya existe" }, 400);
+    if (doc) return res.status(406).send({ message: "La foto ya existe" });
 
     if (req.file && req.file.filename) {
       doc.imgURL = `${req.file.filename}`;
@@ -38,7 +38,9 @@ exports.createAlbums = async (req, res) => {
     await model.create(data, (err, docs) => {
       if (err) {
         console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+        res
+          .status(422)
+          .send({ error: "El formato de datos ingresado es erroneo" });
       } else {
         res.status(201).send(docs);
       }
@@ -52,7 +54,7 @@ exports.getAlbums = async (req, res) => {
   try {
     const docs = await model.find({});
     if (!docs) {
-      res.status(204).send({});
+      res.status(404).send({});
     } else {
       res.status(200).send(docs);
     }
@@ -66,7 +68,7 @@ exports.getAlbumsById = async (req, res) => {
     const id = req.params.id;
     const doc = await model.findById({ _id: parseId(id) });
     if (!doc) {
-      res.status(204).send({});
+      res.status(404).send({});
     } else {
       res.status(200).send(doc);
     }
@@ -82,10 +84,9 @@ exports.updateAlbumsById = async (req, res) => {
 
     const album = await model.findById({ _id: parseId(id) });
     if (!album)
-      return res.send(
-        { message: "La foto que desea actualizar no existe" },
-        204
-      );
+      return res
+        .status(404)
+        .send({ message: "La foto que desea actualizar no existe" });
 
     if (req.file && req.file.filename) {
       body.imgURL = req.file.filename;
@@ -97,7 +98,9 @@ exports.updateAlbumsById = async (req, res) => {
     await model.updateOne({ _id: parseId(id) }, body, (err, doc) => {
       if (err) {
         console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+        res
+          .status(422)
+          .send({ error: "El formato de datos ingresado es erroneo" });
       } else {
         res.status(200).send(doc);
       }
@@ -112,7 +115,9 @@ exports.deleteAlbumsById = async (req, res) => {
     const id = req.params.id;
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
     if (!doc)
-      return res.send({ message: "La foto que desea borrar no existe" }, 204);
+      return res
+        .status(404)
+        .send({ message: "La foto que desea borrar no existe" });
 
     if (doc.imgURL != "ifgf.png") {
       unlink(path.resolve("./uploads/" + doc.imgURL));

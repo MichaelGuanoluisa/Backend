@@ -12,9 +12,9 @@ const EventsScheme = new mongoose.Schema(
     },
     imgURL: {
       type: String,
-      required: false
+      required: false,
     },
-    ubication: {
+    location: {
       type: String,
       require: true,
     },
@@ -26,6 +26,17 @@ const EventsScheme = new mongoose.Schema(
       type: String,
       require: true,
     },
+    number: {
+      type: Number,
+      require: true,
+    },
+    inscriptions: [
+      {
+        ref: "users",
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+      },
+    ],
   },
   {
     versionKey: false,

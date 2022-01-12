@@ -12,7 +12,9 @@ exports.createQuestionary = (req, res) => {
     model.create(data, (err, docs) => {
       if (err) {
         console.log("Error", err);
-        res.status(422).send({ error: err });
+        res
+          .status(422)
+          .send({ error: "El formato de datos ingresado es erroneo" });
       } else {
         res.status(201).send(docs);
       }
@@ -26,7 +28,7 @@ exports.getQuestionary = async (req, res) => {
   try {
     const docs = await model.find({});
     if (!docs) {
-      res.status(204).send({});
+      res.status(404).send({});
     } else {
       res.status(200).send(docs);
     }
@@ -35,33 +37,33 @@ exports.getQuestionary = async (req, res) => {
   }
 };
 
-/*exports.getVideosById = async (req, res) => {
+exports.getQuestionaryById = async (req, res) => {
   const id = req.params.id;
-  const news = await model.findById({ _id: parseId(id) });
-  if (news == null) {
-    res.status(200).send("null");
+  const questionary = await model.findById({ _id: parseId(id) });
+  if (questionary == null) {
+    res.status(404).send({});
   } else {
-    res.status(200).send(news);
+    res.status(200).send(questionary);
   }
 };
-*/
 
 exports.updateQuestionaryById = async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
     //const { id } = req.params
-    const question = await model.findById({ _id: parseId(id) });
-    if (!question)
-      return res.send(
-        { message: "La pregunta que desea actualizar no existe" },
-        204
-      );
+    const questionary = await model.findById({ _id: parseId(id) });
+    if (!questionary)
+      return res
+        .status(404)
+        .send({ message: "El cuestionario que desea actualizar no existe" });
 
     await model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
       if (err) {
         console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+        res
+          .status(422)
+          .send({ error: "El formato de datos ingresado es erroneo" });
       } else {
         res.send({ docs }, 200);
       }
@@ -77,10 +79,9 @@ exports.deleteQuestionaryById = async (req, res) => {
     //const { id } = req.params
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
     if (!doc)
-      return res.send(
-        { message: "La pregunta que desea borrar no existe" },
-        204
-      );
+      return res
+        .status(404)
+        .send({ message: "El cuestionario que desea borrar no existe" });
 
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
@@ -92,7 +93,7 @@ exports.deleteAllQuestionary = (req, res) => {
   try {
     model.deleteMany({}, (err, docs) => {
       if (!docs) {
-        res.status(204).send({});
+        res.status(404).send({});
       }
       res.send(docs);
     });

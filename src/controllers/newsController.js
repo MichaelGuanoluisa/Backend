@@ -54,7 +54,7 @@ exports.getNews = async (req, res) => {
   try {
     const news = await model.find({});
     if (!news) {
-      res.status(204).send({});
+      res.status(404).send({});
     } else {
       res.status(200).send(news);
     }
@@ -68,7 +68,7 @@ exports.getNewsById = async (req, res) => {
     const id = req.params.id;
     const news = await model.findById({ _id: parseId(id) });
     if (!news) {
-      res.status(204).send({});
+      res.status(404).send({});
     } else {
       res.status(200).send(news);
     }
@@ -85,7 +85,7 @@ exports.updateNewsById = async (req, res) => {
     const doc = await model.findById({ _id: parseId(id) });
     if (!doc)
       return res
-        .status(204)
+        .status(406)
         .send({ message: "La noticia que desea actualizar no existe" });
 
     if (req.file && req.file.filename) {
@@ -116,7 +116,7 @@ exports.deleteNewsById = async (req, res) => {
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
     if (!doc)
       return res
-        .status(204)
+        .status(404)
         .send({ message: "La noticia que desea eliminar no existe" });
 
     if (doc.imgURL != "ifgf.png") {
