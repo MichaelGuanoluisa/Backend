@@ -30,6 +30,7 @@ const DonationsScheme = new mongoose.Schema(
     status: {
       type: String,
       required: true,
+      default: "undefined",
     },
     message: {
       type: String,

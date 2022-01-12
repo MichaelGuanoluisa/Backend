@@ -25,7 +25,7 @@ exports.fileUpload = (req, res, next) => {
 exports.createMessages = async (req, res) => {
   try {
     const data = req.body;
-
+    console.log(data);
     const doc = await model.findOne({ title: data.title });
     if (doc) return res.status(406).send({ message: "El mensaje ya existe" });
 
