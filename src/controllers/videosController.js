@@ -16,18 +16,20 @@ exports.createVideos = async (req, res) => {
       data.type == "general"
     ) {
       const doc = await model.findOne({ url: data.url });
-      if (doc) return res.send({ message: "El video ya existe" }, 400);
+      if (doc) return res.status(406).send({ message: "El video ya existe" });
 
       await model.create(data, (err, docs) => {
         if (err) {
           console.log("Error", err);
-          res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+          return res
+            .status(404)
+            .send({ message: "El cuestionario que desea borrar no existe" });
         } else {
           res.status(201).send(docs);
         }
       });
     } else {
-      res.status(404).send({
+      res.status(406).send({
         message: "solo puede ser de 3 tipos: niños, jovenes y general",
       });
     }
@@ -40,7 +42,7 @@ exports.getVideos = async (req, res) => {
   try {
     const docs = await model.find({});
     if (!docs) {
-      res.status(204).send({});
+      res.status(404).send({});
     } else {
       res.status(200).send(docs);
     }
@@ -54,7 +56,7 @@ exports.getVideosById = async (req, res) => {
     const id = req.params.id;
     const doc = await model.findById({ _id: parseId(id) });
     if (!doc) {
-      res.status(204).send({});
+      res.status(404).send({});
     } else {
       res.status(200).send(doc);
     }
@@ -70,15 +72,16 @@ exports.updateVideosById = async (req, res) => {
 
     const video = await model.findById({ _id: parseId(id) });
     if (!video)
-      return res.send(
-        { message: "El video que desea actualizar no existe" },
-        204
-      );
+      return res
+        .status(404)
+        .send({ message: "El video que desea actualizar no existe" });
 
     await model.updateOne({ _id: parseId(id) }, body, (err, doc) => {
       if (err) {
         console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+        res
+          .status(422)
+          .send({ error: "El formato de datos ingresado es erroneo" });
       } else {
         res.status(200).send(doc);
       }
@@ -94,12 +97,16 @@ exports.deleteVideosById = async (req, res) => {
 
     const video = await model.findById({ _id: parseId(id) });
     if (!video)
-      return res.send({ message: "El video que desea borrar no existe" }, 204);
+      return res
+        .status(404)
+        .send({ message: "El video que desea borrar no existe" });
 
     model.deleteOne({ _id: parseId(id) }, (err, docs) => {
       if (err) {
         console.log("Error", err);
-        res.send({ error: "error" }, 422);
+        res
+          .status(422)
+          .send({ error: "El formato de datos ingresado es erroneo" });
       } else {
         res.status(200).send({ message: "Eliminado con exito" });
       }

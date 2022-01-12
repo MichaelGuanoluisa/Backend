@@ -17,7 +17,7 @@ exports.createScore = async (req, res) => {
     data.user_id = decode.id;
 
     await model.create(data, (err, docs) => {
-      res.status(201).send({ message: "puntaje creado correctamente" });
+      res.status(201).send(docs);
     });
   } catch (error) {
     httpError(res, error);
@@ -28,7 +28,7 @@ exports.getScore = async (req, res) => {
   try {
     const scores = await model.find({});
     if (!scores) {
-      res.status(204).send({});
+      res.status(404).send({});
     } else {
       res.status(200).send(scores);
     }
@@ -41,10 +41,10 @@ exports.getScoreById = async (req, res) => {
   try {
     const id = req.params.id;
     const score = await model.findById({ _id: parseId(id) });
-    if (score == null) {
-      res.status(204).send({});
+    if (!score) {
+      res.status(404).send({});
     } else {
-      res.status(204).send(score);
+      res.status(200).send(score);
     }
   } catch (error) {
     httpError(res, error);
@@ -58,12 +58,15 @@ exports.updateScoreById = async (req, res) => {
     const data = req.body;
 
     const doc = await model.findById({ _id: parseId(id) });
-    if (!doc) return res.send({ message: "La registro no existe" }, 204);
+    if (!doc)
+      return res.status(404).send({ message: "La puntuacion no existe" });
 
     model.updateOne({ _id: parseId(id) }, data, (err, doc) => {
       if (err) {
         console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+        res
+          .status(422)
+          .send({ error: "El formato de datos ingresado es erroneo" });
       } else {
         res.status(200).send(doc);
       }
@@ -79,10 +82,9 @@ exports.deleteScoreById = async (req, res) => {
 
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
     if (!doc)
-      return res.send(
-        { message: "La puntuacion que desea borrar no existe" },
-        204
-      );
+      return res
+        .status(404)
+        .send({ message: "La puntuacion que desea borrar no existe" });
 
     res.send({ message: "Eliminado con exito" });
   } catch (error) {

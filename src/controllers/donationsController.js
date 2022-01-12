@@ -41,7 +41,9 @@ exports.createDonations = async (req, res) => {
     await model.create(data, (err, doc) => {
       if (err) {
         console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+        res
+          .status(422)
+          .send({ error: "El formato de datos ingresado es erroneo" });
       } else {
         res.status(201).send(doc);
       }
@@ -85,10 +87,9 @@ exports.updateDonationsById = async (req, res) => {
 
     const donation = await model.findById({ _id: parseId(id) });
     if (!donation)
-      return res.send(
-        { message: "La donacion que desea actualizar no existe" },
-        404
-      );
+      return res
+        .status(404)
+        .send({ message: "La donacion que desea actualizar no existe" });
 
     if (req.file && req.file.filename) {
       body.imgURL = req.file.filename;
@@ -100,7 +101,9 @@ exports.updateDonationsById = async (req, res) => {
     model.updateOne({ _id: parseId(id) }, body, (err, doc) => {
       if (err) {
         console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
+        res
+          .status(422)
+          .send({ error: "El formato de datos ingresado es erroneo" });
       } else {
         res.status(200).send(doc);
       }
