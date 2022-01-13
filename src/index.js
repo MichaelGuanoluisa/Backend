@@ -1,6 +1,5 @@
 const express = require("express");
 const morgan = require("morgan");
-const bodyParser = require("body-parser");
 const libs = require("./libs/initialSetup");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -24,10 +23,10 @@ app.use(cors());
 const routes = require("./routes");
 
 //middlewares
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 
 // parse application/json
-app.use(bodyParser.json());
+app.use(express.json());
 
 //carpetas publicas
 app.use(express.static("uploads"));

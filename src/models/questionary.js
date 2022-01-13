@@ -20,9 +20,9 @@ const QuestionaryScheme = new mongoose.Schema(
           },
           optionC: {
             type: String,
-            required: true,
+            required: false,
           },
-          optionD: { type: String, required: true },
+          optionD: { type: String, required: false },
           answer: { type: String, required: true },
         },
         required: true,

@@ -75,6 +75,7 @@ exports.getInscriptions = async (req, res) => {
   }
 };
 
+/*
 exports.deleteInscriptionById = (req, res) => {
   try {
     const id = req.params.id;
@@ -90,3 +91,4 @@ exports.deleteInscriptionById = (req, res) => {
     httpError(res, error);
   }
 };
+*/

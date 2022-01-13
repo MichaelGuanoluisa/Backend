@@ -1,15 +1,73 @@
-const { check } = require("express-validator");
-const { validateResult } = require("../helpers/validateHelper");
+const { Error } = require("../helpers/validateError");
 
-const validateCreate = [
-  check("title").exists().not().isEmpty(),
-  check("description").exists().not().isEmpty(),
-  check("type").exists().not().isEmpty(),
-  check("url").exists().isURL(),
-  (req, res, next) => {
-    console.log("hola validacion");
-    validateResult(req, res, next);
-  },
-];
+exports.validate = (req, res) => {
+  const { description, type, title, url } = req.body;
+  const message = { error: [] };
 
-module.exports = { validateCreate };
+  if (!title) {
+    message.error.push("El titulo es requerido");
+  }
+  if (typeof title != "string") {
+    message.error.push("El titulo ingresado es incorrecto");
+  }
+  if (!description) {
+    message.error.push("La descripcion es requerida");
+  }
+  if (!type) {
+    message.error.push("El tipo de video es requerido");
+  }
+  if (type != "niños" || type != "familia" || type != "jovenes") {
+    message.error.push(
+      "La donacion debe ser uno de 3 tipos: niños, jovenes o familia"
+    );
+  }
+  if (typeof type != "string") {
+    message.error.push("El tipo de video tiene un formato incorrecto");
+  }
+  if (!url) {
+    message.error.push("La url es requerida");
+  }
+  if (typeof url != "string") {
+    message.error.push("La url tiene un formato incorrecto");
+  }
+
+  if (message.error.length != 0) {
+    Error(res, message);
+  }
+};
+
+exports.validateUpdate = (req, res) => {
+  const { description, type, title, url } = req.body;
+  const message = { error: [] };
+
+  if (title) {
+    if (typeof title != "string") {
+      message.error.push("El titulo ingresado es incorrecto");
+    }
+  }
+
+  if (description) {
+    if (typeof description != "string") {
+      message.error.push("El titulo ingresado es incorrecto");
+    }
+  }
+  if (type) {
+    if (type != "niños" || type != "familia" || type != "jovenes") {
+      message.error.push(
+        "La donacion debe ser uno de 3 tipos: niños, jovenes o familia"
+      );
+    }
+    if (typeof type != "string") {
+      message.error.push("El tipo de video tiene un formato incorrecto");
+    }
+  }
+  if (url) {
+    if (typeof url != "string") {
+      message.error.push("La url tiene un formato incorrecto");
+    }
+  }
+
+  if (message.error.length != 0) {
+    Error(res, message);
+  }
+};
