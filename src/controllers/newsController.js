@@ -5,6 +5,7 @@ const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
 const { httpError } = require("../helpers/handleError");
 const path = require("path");
+const validations = require("../validators/info");
 
 const parseId = (id) => {
   return mongoose.Types.ObjectId(id);
@@ -25,10 +26,14 @@ exports.fileUpload = (req, res, next) => {
 exports.createNews = async (req, res) => {
   try {
     const data = req.body;
-    console.log(data);
+    console.log(req.body);
+    await validations.validate(req, res);
 
     const doc = await model.findOne({ title: data.title });
-    if (doc) return res.status(400).send({ message: "La noticia ya existe" });
+    if (doc) {
+      unlink(path.resolve("./public/uploads/" + req.file.filename));
+      return res.status(406).send({ message: "La noticia ya existe" });
+    }
 
     if (req.file && req.file.filename) {
       data.imgURL = `${req.file.filename}`;
@@ -81,30 +86,26 @@ exports.updateNewsById = async (req, res) => {
   try {
     const id = req.params.id;
     const news = req.body;
+    await validations.validateUpdate(req, res);
 
     const doc = await model.findById({ _id: parseId(id) });
-    if (!doc)
+    if (!doc) {
+      unlink(path.resolve("./public/uploads/" + req.file.filename));
       return res
         .status(406)
         .send({ message: "La noticia que desea actualizar no existe" });
+    }
 
     if (req.file && req.file.filename) {
       news.imgURL = req.file.filename;
-      unlink(path.resolve("./uploads/" + doc.imgURL));
+      unlink(path.resolve("./public/uploads/" + doc.imgURL));
     } else {
       news.imgURL = notice.imgURL;
     }
 
-    await model.updateOne({ _id: parseId(id) }, news, (err, doc) => {
-      if (err) {
-        console.log("Error", err);
-        res
-          .status(422)
-          .send({ error: "El formato de datos ingresado es erroneo" });
-      } else {
-        res.status(200).send(doc);
-      }
-    });
+    await model.updateOne({ _id: parseId(id) }, news);
+    const response = await model.findById({ _id: parseId(id) });
+    res.status(200).send(response);
   } catch (error) {
     httpError(res, error);
   }
@@ -120,7 +121,7 @@ exports.deleteNewsById = async (req, res) => {
         .send({ message: "La noticia que desea eliminar no existe" });
 
     if (doc.imgURL != "ifgf.png") {
-      unlink(path.resolve("./uploads/" + doc.imgURL));
+      unlink(path.resolve("./public/uploads/" + doc.imgURL));
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {

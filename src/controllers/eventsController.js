@@ -5,6 +5,7 @@ const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
 const { httpError } = require("../helpers/handleError");
 const path = require("path");
+const validations = require("../validators/event");
 
 const parseId = (id) => {
   return mongoose.Types.ObjectId(id);
@@ -25,10 +26,13 @@ exports.fileUpload = (req, res, next) => {
 exports.createEvents = async (req, res) => {
   try {
     const data = req.body;
-    console.log(data);
+    await validations.validate(req, res);
 
     const doc = await model.findOne({ title: data.title });
-    if (doc) return res.status(400).send({ message: "El evento ya existe" });
+    if (doc) {
+      unlink(path.resolve("./public/uploads/" + req.file.filename));
+      return res.status(406).send({ message: "El evento ya existe" });
+    }
 
     if (req.file && req.file.filename) {
       data.imgURL = req.file.filename;
@@ -83,28 +87,25 @@ exports.updateEventsById = async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
+    await validations.validateUpdate(req, res);
 
     const event = await model.findById({ _id: parseId(id) });
-    if (!event)
-      return res.send(
-        { message: "El evento que desea actualizar no existe" },
-        204
-      );
+    if (!event) {
+      unlink(path.resolve("./public/uploads/" + req.file.filename));
+      return res
+        .status(404)
+        .send({ message: "El evento que desea actualizar no existe" });
+    }
 
     if (req.file && req.file.filename) {
       body.imgURL = req.file.filename;
-      unlink(path.resolve("./uploads/" + event.imgURL));
+      unlink(path.resolve("./public/uploads/" + event.imgURL));
     } else {
       body.imgURL = event.imgURL;
     }
-    await model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
-      if (err) {
-        console.log("Error", err);
-        res.send({ error: "El formato de datos ingresado es erroneo" }, 422);
-      } else {
-        res.status(200).send(doc);
-      }
-    });
+    await model.updateOne({ _id: parseId(id) }, body);
+    const doc = await model.findById({ _id: parseId(id) });
+    res.status(200).send(doc);
   } catch (error) {
     httpError(res, error);
   }
@@ -118,7 +119,7 @@ exports.deleteEventsById = async (req, res) => {
       return res.send({ message: "El evento que desea borrar no existe" }, 204);
 
     if (doc.imgURL != "ifgf.png") {
-      unlink(path.resolve("./uploads/" + doc.imgURL));
+      unlink(path.resolve("./public/uploads/" + doc.imgURL));
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {

@@ -1,15 +1,22 @@
 const mongoose = require("mongoose");
 const { httpError } = require("../helpers/handleError");
 const model = require("../models/questionary");
+const validations = require("../validators/questionary");
 
 const parseId = (id) => {
   return mongoose.Types.ObjectId(id);
 };
 
-exports.createQuestionary = (req, res) => {
+exports.createQuestionary = async (req, res) => {
   try {
     const data = req.body;
-    model.create(data, (err, docs) => {
+    await validations.validate(req, res);
+
+    const doc = await model.findOne({ name: data.name });
+    if (doc)
+      return res.status(406).send({ message: "El cuestionario ya existe" });
+
+    await model.create(data, (err, docs) => {
       if (err) {
         console.log("Error", err);
         res
@@ -51,23 +58,17 @@ exports.updateQuestionaryById = async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
-    //const { id } = req.params
+    await validations.validateUpdate(req, res);
+
     const questionary = await model.findById({ _id: parseId(id) });
     if (!questionary)
       return res
         .status(404)
         .send({ message: "El cuestionario que desea actualizar no existe" });
 
-    await model.updateOne({ _id: parseId(id) }, body, (err, docs) => {
-      if (err) {
-        console.log("Error", err);
-        res
-          .status(422)
-          .send({ error: "El formato de datos ingresado es erroneo" });
-      } else {
-        res.send({ docs }, 200);
-      }
-    });
+    await model.updateOne({ _id: parseId(id) }, body);
+    const doc = await model.findById({ _id: parseId(id) });
+    res.status(200).send(doc);
   } catch (error) {
     httpError(res, error);
   }

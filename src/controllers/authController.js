@@ -3,12 +3,14 @@ const Role = require("../models/role");
 const jwt = require("jsonwebtoken");
 const res = require("express/lib/response");
 const { httpError } = require("../helpers/handleError");
-//const config = require('../config');
+const validations = require("../validators/auth");
+
+const tokens = [];
 
 exports.register = async (req, res) => {
-  //obtener datos
   try {
     const { name, lastname, email, password, roles } = req.body;
+    await validations.validate(req, res);
     const user = await User.findOne({ email: email });
 
     if (!user) {
@@ -40,6 +42,9 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
+    console.log(typeof req.body.email);
+    await validations.validateLogin(req, res);
+
     const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
@@ -58,13 +63,13 @@ exports.login = async (req, res) => {
       return res.status(401).send({ message: "Contraseña incorrecta" });
     }
 
-    req.token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
       expiresIn: 86400, //24h
     });
 
-    return res
-      .status(200)
-      .send({ token: req.token, user: user, role: roleName });
+    const data = concat(user, token, roleName);
+
+    return res.status(200).send(data);
   } catch (e) {
     httpError(res, e);
   }
@@ -74,19 +79,17 @@ exports.me = async (req, res) => {
   try {
     //obtener token
     const token = req.headers["x-access-token"];
-
     //extraer datos del token
     const decoded = this.decoded(token);
-
     //comprobar si el usuario existe
     const user = await User.findById(decoded.id, { password: 0 });
     if (!user) {
-      return res.status(404).json({ message: "usuario no activo" });
+      return res.status(404).json({ message: "Inicie Sesión" });
     } else {
       return res.send({ user: user });
     }
   } catch (error) {
-    return res.status(401).json({ message: "token invalido" });
+    return res.status(401).json({ error });
   }
 };
 
@@ -94,7 +97,13 @@ exports.logout = (req, res) => {
   try {
     const token = req.headers["x-access-token"];
     if (!token) return res.status(403).send({ message: "Inicie sesión" });
-    res.status(200).send({ msg: "logged out" });
+
+    for (let i = 0; i < tokens.length; i++) {
+      if (tokens[i] === token) {
+        tokens.splice(i, 1);
+      }
+    }
+    res.status(200).send({ message: "sesion cerrada" });
   } catch (error) {
     return res.status(500).send({ message: error });
   }
@@ -107,6 +116,18 @@ exports.decoded = (token) => {
     }
     return (decoded = jwt.verify(token, process.env.SECRET_KEY));
   } catch (error) {
-    httpError(res, e);
+    console.log(error);
+    httpError(res, error);
   }
 };
+
+function concat(user, token, role) {
+  const json = {};
+  json._id = user._id;
+  json.token = token;
+  json.role = role;
+  json.name = user.name;
+  json.lastname = user.lastname;
+  json.email = user.email;
+  return json;
+}
