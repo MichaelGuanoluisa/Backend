@@ -90,7 +90,9 @@ exports.updateDonationsById = async (req, res) => {
 
     const donation = await model.findById({ _id: parseId(id) });
     if (!donation) {
-      unlink(path.resolve("./public/uploads/" + req.file.filename));
+      if(req.file.filename){
+        unlink(path.resolve("./public/uploads/" + req.file.filename));
+      }
       return res
         .status(404)
         .send({ message: "La donacion que desea actualizar no existe" });
@@ -106,6 +108,7 @@ exports.updateDonationsById = async (req, res) => {
     await model.updateOne({ _id: parseId(id) }, body);
     const doc = await model.findById({ _id: parseId(id) });
     res.status(200).send(doc);
+
   } catch (error) {
     httpError(res, error);
   }

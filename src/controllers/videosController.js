@@ -25,6 +25,7 @@ exports.createVideos = async (req, res) => {
         res.status(201).send(docs);
       }
     });
+
   } catch (error) {
     httpError(res, error);
   }
@@ -71,6 +72,7 @@ exports.updateVideosById = async (req, res) => {
     await model.updateOne({ _id: parseId(id) }, body);
     const doc = await model.findById({ _id: parseId(id) });
     res.status(200).send(doc);
+
   } catch (error) {
     httpError(res, error);
   }

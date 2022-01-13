@@ -66,10 +66,11 @@ exports.updateScoreById = async (req, res) => {
     const doc = await model.findById({ _id: parseId(id) });
     if (!doc)
       return res.status(404).send({ message: "La puntuacion no existe" });
-
+    
     await model.updateOne({ _id: parseId(id) }, data);
     const score = await model.findById({ _id: parseId(id) });
     res.status(200).send(score);
+
   } catch (error) {
     httpError(res, error);
   }

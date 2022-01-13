@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const libs = require("./libs/initialSetup");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const { multipartFileParser } = require("express-multipart-form-data-process");
 dotenv.config();
 require("./libs/database");
 

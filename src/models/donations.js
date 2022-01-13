@@ -21,7 +21,7 @@ const DonationsScheme = new mongoose.Schema(
     },
     address: {
       type: String,
-      required: true,
+      required: false,
     },
     date: {
       type: String,

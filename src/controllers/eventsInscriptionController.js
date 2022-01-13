@@ -74,6 +74,7 @@ exports.getInscriptions = async (req, res) => {
     httpError(res, error);
   }
 };
+
 /*
 exports.deleteInscriptionById = (req, res) => {
   try {

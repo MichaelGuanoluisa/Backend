@@ -3,7 +3,7 @@ const path = require("path");
 const { Error } = require("../helpers/validateError");
 
 exports.validate = (req, res) => {
-  const { description, type, delivery, location, date } = req.body;
+  const { description, type, delivery, address, date } = req.body;
   const message = { error: [] };
 
   if (!description) {
@@ -34,8 +34,8 @@ exports.validate = (req, res) => {
   if (typeof delivery != "string") {
     message.error.push("La entrega tiene un formato incorrecto");
   }
-  if (location) {
-    if (typeof location != "string") {
+  if (address) {
+    if (typeof address != "string") {
       message.error.push("La direccion tiene un formato incorrecto");
     }
   }
@@ -52,8 +52,8 @@ exports.validate = (req, res) => {
   }
 };
 
-exports.validate = (req, res) => {
-  const { description, type, delivery, location, date } = req.body;
+exports.validateUpdate = (req, res) => {
+  const { description, type, delivery, address, date } = req.body;
   const message = { error: [] };
 
   if (description) {
@@ -86,8 +86,8 @@ exports.validate = (req, res) => {
       message.error.push("La entrega tiene un formato incorrecto");
     }
   }
-  if (location) {
-    if (typeof location != "string") {
+  if (address) {
+    if (typeof address != "string") {
       message.error.push("La direccion tiene un formato incorrecto");
     }
   }
@@ -99,7 +99,6 @@ exports.validate = (req, res) => {
   }
 
   if (message.error.length != 0) {
-    unlink(path.resolve("./public/uploads/" + req.file.filename));
     Error(res, message);
   }
 };

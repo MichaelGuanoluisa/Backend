@@ -90,7 +90,9 @@ exports.updateMessagesById = async (req, res) => {
 
     const message = await model.findById({ _id: parseId(id) });
     if (!message) {
-      unlink(path.resolve("./public/uploads/" + req.file.filename));
+      if(req.file.filename){
+        unlink(path.resolve("./public/uploads/" + req.file.filename));
+      }
       return res
         .status(404)
         .send({ message: "El mensaje que desea actualizar no existe" });
@@ -102,10 +104,10 @@ exports.updateMessagesById = async (req, res) => {
     } else {
       body.imgURL = message.imgURL;
     }
-
     await model.updateOne({ _id: parseId(id) }, body);
     const doc = await model.findById({ _id: parseId(id) });
     res.status(200).send(doc);
+
   } catch (error) {
     httpError(res, error);
   }

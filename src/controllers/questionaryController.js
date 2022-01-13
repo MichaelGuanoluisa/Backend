@@ -69,6 +69,7 @@ exports.updateQuestionaryById = async (req, res) => {
     await model.updateOne({ _id: parseId(id) }, body);
     const doc = await model.findById({ _id: parseId(id) });
     res.status(200).send(doc);
+    
   } catch (error) {
     httpError(res, error);
   }
