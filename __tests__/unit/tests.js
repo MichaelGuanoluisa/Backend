@@ -4,6 +4,7 @@ const faker = require("faker");
 const mongoose = require("mongoose");
 
 // testing
+const token = "";
 
 it("Post login respond a json with contain a user", (done) => {
   data = {
@@ -27,8 +28,8 @@ it("Get News respond a json with contain news", (done) => {
     .expect(200, done);
 });
 
-it("Get a user by id respond 404 not found", (done) => {
-  id = mongoose.Schema.Types.ObjectId;
+it("Get a news by id respond 404 not found", (done) => {
+  id = mongoose.Types.ObjectId(faker.datatype.string());
   request(app)
     .get(`/api/news/${id}`)
     .set("Accept", "application/json")
@@ -62,10 +63,7 @@ it("Post news with a json", (done) => {
     .post("/api/news")
     .send(data)
     .set("Accept", "application/json")
-    .set(
-      "x-access-token",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYWU0ZDIwMGU3YzYwMDgzMzM4YzhhMiIsImlhdCI6MTY0MTUwOTY5NiwiZXhwIjoxNjQxNTk2MDk2fQ.EDOQjH3H4Z8TjCJmaY5siOyJSN3imQsIlLqaih4kVKc"
-    )
+    .set("x-access-token", token)
     .expect("Content-Type", /json/)
     .expect(201)
     .end(done);

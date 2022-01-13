@@ -42,7 +42,6 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    console.log(typeof req.body.email);
     await validations.validateLogin(req, res);
 
     const user = await User.findOne({ email: req.body.email });
