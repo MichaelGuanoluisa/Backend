@@ -5,8 +5,6 @@ const res = require("express/lib/response");
 const { httpError } = require("../helpers/handleError");
 const validations = require("../validators/auth");
 
-const tokens = [];
-
 exports.register = async (req, res) => {
   try {
     const { name, lastname, email, password, roles } = req.body;
@@ -67,7 +65,6 @@ exports.login = async (req, res) => {
     });
 
     const data = concat(user, token, roleName);
-
     return res.status(200).send(data);
   } catch (e) {
     httpError(res, e);
@@ -97,11 +94,6 @@ exports.logout = (req, res) => {
     const token = req.headers["x-access-token"];
     if (!token) return res.status(403).send({ message: "Inicie sesión" });
 
-    for (let i = 0; i < tokens.length; i++) {
-      if (tokens[i] === token) {
-        tokens.splice(i, 1);
-      }
-    }
     res.status(200).send({ message: "sesion cerrada" });
   } catch (error) {
     return res.status(500).send({ message: error });
