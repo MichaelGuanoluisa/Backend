@@ -33,8 +33,8 @@ exports.createDonations = async (req, res) => {
     const decoded = auth.decoded(token);
     data.user_id = decoded.id;
 
-    if (req.file && req.file.filename) {
-      data.imgURL = `${req.file.filename}`;
+    if (req?.file && req?.file?.filename) {
+      data.imgURL = `${req?.file?.filename}`;
     } else {
       data.imgURL = "ifgf.png";
     }
@@ -90,7 +90,7 @@ exports.updateDonationsById = async (req, res) => {
 
     const donation = await model.findById({ _id: parseId(id) });
     if (!donation) {
-      if(req.file.filename){
+      if(req?.file?.filename){
         unlink(path.resolve("./public/uploads/" + req.file.filename));
       }
       return res
@@ -98,8 +98,8 @@ exports.updateDonationsById = async (req, res) => {
         .send({ message: "La donacion que desea actualizar no existe" });
     }
 
-    if (req.file && req.file.filename) {
-      body.imgURL = req.file.filename;
+    if (req?.file && req?.file?.filename) {
+      body.imgURL = req?.file?.filename;
       unlink(path.resolve("./public/uploads/" + donation.imgURL));
     } else {
       body.imgURL = donation.imgURL;

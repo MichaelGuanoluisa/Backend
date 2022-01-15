@@ -7,7 +7,7 @@ const validations = require("../validators/auth");
 
 exports.register = async (req, res) => {
   try {
-    const { name, lastname, email, password, roles } = req.body;
+    const { name, lastname, cellphone, email, password, roles } = req.body;
     await validations.validate(req, res);
     const user = await User.findOne({ email: email });
 
@@ -16,6 +16,7 @@ exports.register = async (req, res) => {
         name,
         lastname,
         email,
+        cellphone,
         password: await User.encryptPassword(password),
       });
 

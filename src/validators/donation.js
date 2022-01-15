@@ -12,7 +12,7 @@ exports.validate = (req, res) => {
   if (!type) {
     message.error.push("El tipo de donacion es requerida");
   }
-  if (type != "comida" || type != "ropa" || type != "dinero") {
+  if (type !== "comida" || type !== "ropa" || type !== "dinero") {
     message.error.push(
       "La donacion debe ser uno de 3 tipos: comida, ropa o dinero"
     );
@@ -46,10 +46,12 @@ exports.validate = (req, res) => {
     message.error.push("La fecha tiene un formato incorrecto");
   }
 
-  if (message.error.length != 0) {
-    unlink(path.resolve("./public/uploads/" + req.file.filename));
-    Error(res, message);
-  }
+  // if (message.error.length !== 0) {
+  //   if(req.file){
+  //     unlink(path.resolve("./public/uploads/" + req?.file?.filename));
+  //   }
+  //   Error(res, message);
+  // }
 };
 
 exports.validateUpdate = (req, res) => {
