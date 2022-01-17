@@ -28,28 +28,32 @@ exports.createDonations = async (req, res) => {
   try {
     const data = req.body;
     const token = req.headers["x-access-token"];
-    await validations.validate(req, res);
+    const errors = validations.validate(req);
 
-    const decoded = auth.decoded(token);
-    data.user_id = decoded.id;
-
-    if (req?.file && req?.file?.filename) {
-      data.imgURL = `${req?.file?.filename}`;
+    if (errors) {
+      return res.status(406).send(errors);
     } else {
-      data.imgURL = "ifgf.png";
-    }
-    data.status = "undefined";
+      const decoded = auth.decoded(token);
+      data.user_id = decoded.id;
 
-    await model.create(data, (err, doc) => {
-      if (err) {
-        console.log("Error", err);
-        res
-          .status(422)
-          .send({ error: "El formato de datos ingresado es erroneo" });
+      if (req?.file && req?.file?.filename) {
+        data.imgURL = `${req?.file?.filename}`;
       } else {
-        res.status(201).send(doc);
+        data.imgURL = "ifgf.png";
       }
-    });
+      data.status = "undefined";
+
+      await model.create(data, (err, doc) => {
+        if (err) {
+          console.log("Error", err);
+          res
+            .status(422)
+            .send({ error: "El formato de datos ingresado es erroneo" });
+        } else {
+          res.status(201).send(doc);
+        }
+      });
+    }
   } catch (error) {
     httpError(res, error);
   }
@@ -86,29 +90,33 @@ exports.updateDonationsById = async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
-    await validations.validateUpdate(req, res);
+    const errors = validations.validateUpdate(req, res);
 
-    const donation = await model.findById({ _id: parseId(id) });
-    if (!donation) {
-      if(req?.file?.filename){
-        unlink(path.resolve("./public/uploads/" + req.file.filename));
-      }
-      return res
-        .status(404)
-        .send({ message: "La donacion que desea actualizar no existe" });
-    }
-
-    if (req?.file && req?.file?.filename) {
-      body.imgURL = req?.file?.filename;
-      unlink(path.resolve("./public/uploads/" + donation.imgURL));
+    if (errors) {
+      return res.status(406).send(errors);
     } else {
-      body.imgURL = donation.imgURL;
+      const donation = await model.findById({ _id: parseId(id) });
+
+      if (!donation) {
+        if (req?.file?.filename) {
+          unlink(path.resolve("./public/uploads/" + req.file.filename));
+        }
+        return res
+          .status(404)
+          .send({ message: "La donacion que desea actualizar no existe" });
+      }
+
+      if (req?.file && req?.file?.filename) {
+        body.imgURL = req?.file?.filename;
+        unlink(path.resolve("./public/uploads/" + donation.imgURL));
+      } else {
+        body.imgURL = donation.imgURL;
+      }
+
+      await model.updateOne({ _id: parseId(id) }, body);
+      const doc = await model.findById({ _id: parseId(id) });
+      return res.status(200).send(doc);
     }
-
-    await model.updateOne({ _id: parseId(id) }, body);
-    const doc = await model.findById({ _id: parseId(id) });
-    res.status(200).send(doc);
-
   } catch (error) {
     httpError(res, error);
   }

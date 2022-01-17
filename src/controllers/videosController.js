@@ -10,22 +10,18 @@ const parseId = (id) => {
 exports.createVideos = async (req, res) => {
   try {
     const data = req.body;
-    await validations.validate(req, res);
+    const errors = validations.validate(req);
 
-    const doc = await model.findOne({ url: data.url });
-    if (doc) return res.status(406).send({ message: "El video ya existe" });
+    if (errors) {
+      return res.status(406).send(errors);
+    } else {
+      const doc = await model.findOne({ url: data.url });
+      if (doc) return res.status(406).send({ message: "El video ya existe" });
 
-    await model.create(data, (err, docs) => {
-      if (err) {
-        console.log("Error", err);
-        return res
-          .status(404)
-          .send({ message: "El formato de datos ingresado es erroneo" });
-      } else {
-        res.status(201).send(docs);
-      }
-    });
-
+      await model.create(data, (err, docs) => {
+        return res.status(201).send(docs);
+      });
+    }
   } catch (error) {
     httpError(res, error);
   }
@@ -63,16 +59,21 @@ exports.updateVideosById = async (req, res) => {
     const id = req.params.id;
     const body = req.body;
 
-    const video = await model.findById({ _id: parseId(id) });
-    if (!video)
-      return res
-        .status(404)
-        .send({ message: "El video que desea actualizar no existe" });
+    const errors = validations.validateUpdate(req);
 
-    await model.updateOne({ _id: parseId(id) }, body);
-    const doc = await model.findById({ _id: parseId(id) });
-    res.status(200).send(doc);
+    if (errors) {
+      return res.status(406).send(errors);
+    } else {
+      const video = await model.findById({ _id: parseId(id) });
+      if (!video)
+        return res
+          .status(404)
+          .send({ message: "El video que desea actualizar no existe" });
 
+      await model.updateOne({ _id: parseId(id) }, body);
+      const doc = await model.findById({ _id: parseId(id) });
+      return res.status(200).send(doc);
+    }
   } catch (error) {
     httpError(res, error);
   }

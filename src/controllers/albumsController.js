@@ -26,30 +26,27 @@ exports.fileUpload = (req, res, next) => {
 exports.createAlbums = async (req, res) => {
   try {
     const data = req.body;
-    await validations.validate(req, res);
+    const errors = validations.validate(req);
 
-    const doc = await model.findOne({ title: data.title });
-    if (doc) {
-      unlink(path.resolve("./public/uploads/" + req.file.filename));
-      return res.status(406).send({ message: "La foto ya existe" });
-    }
-
-    if (req.file && req.file.filename) {
-      doc.imgURL = `${req.file.filename}`;
+    if (errors) {
+      return res.status(406).send(errors);
     } else {
-      doc.imgURL = "ifgf.png";
-    }
-
-    await model.create(data, (err, docs) => {
-      if (err) {
-        console.log("Error", err);
-        res
-          .status(422)
-          .send({ error: "El formato de datos ingresado es erroneo" });
-      } else {
-        res.status(201).send(docs);
+      const doc = await model.findOne({ title: data.title });
+      if (doc) {
+        unlink(path.resolve("./public/uploads/" + req.file.filename));
+        return res.status(406).send({ message: "La foto ya existe" });
       }
-    });
+
+      if (req.file && req.file.filename) {
+        doc.imgURL = `${req.file.filename}`;
+      } else {
+        doc.imgURL = "ifgf.png";
+      }
+
+      await model.create(data, (err, docs) => {
+        return res.status(201).send(docs);
+      });
+    }
   } catch (error) {
     httpError(res, error);
   }
@@ -86,30 +83,33 @@ exports.updateAlbumsById = async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
-    await validations.validateUpdate(req, res);
+    const errors = validations.validateUpdate(req);
 
-    const album = await model.findById({ _id: parseId(id) });
-
-    if (!album) {
-      if(req.file.filename){
-        unlink(path.resolve("./public/uploads/" + req.file.filename));
-      }
-      return res
-        .status(404)
-        .send({ message: "La foto que desea actualizar no existe" });
-    }
-
-    if (req.file && req.file.filename) {
-      body.imgURL = req.file.filename;
-      unlink(path.resolve("./public/uploads/" + album.imgURL));
+    if (errors) {
+      return res.status(406).send(errors);
     } else {
-      body.imgURL = album.imgURL;
+      const album = await model.findById({ _id: parseId(id) });
+
+      if (!album) {
+        if (req.file.filename) {
+          unlink(path.resolve("./public/uploads/" + req.file.filename));
+        }
+        return res
+          .status(404)
+          .send({ message: "La foto que desea actualizar no existe" });
+      }
+
+      if (req.file && req.file.filename) {
+        body.imgURL = req.file.filename;
+        unlink(path.resolve("./public/uploads/" + album.imgURL));
+      } else {
+        body.imgURL = album.imgURL;
+      }
+
+      await model.updateOne({ _id: parseId(id) }, body);
+      const doc = await model.findById({ _id: parseId(id) });
+      return res.status(200).send(doc);
     }
-
-    await model.updateOne({ _id: parseId(id) }, body);
-    const doc = await model.findById({ _id: parseId(id) });
-    res.status(200).send(doc);
-
   } catch (error) {
     httpError(res, error);
   }

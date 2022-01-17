@@ -12,18 +12,22 @@ exports.createScore = async (req, res) => {
   try {
     const data = req.body;
     const token = req.headers["x-access-token"];
-    await validations.validate(req, res);
+    const errors = validations.validate(req);
 
-    const doc = await model.findById({ _id: parseId(data.questionary_id) });
-    if (!doc)
-      return res.status(404).send({ message: "El cuestionario no existe" });
+    if (errors) {
+      return res.status(406).send(errors);
+    } else {
+      const doc = await model.findById({ _id: parseId(data.questionary_id) });
+      if (!doc)
+        return res.status(404).send({ message: "El cuestionario no existe" });
 
-    const decode = auth.decoded(token);
-    data.user_id = decode.id;
+      const decode = auth.decoded(token);
+      data.user_id = decode.id;
 
-    await model.create(data, (err, docs) => {
-      res.status(201).send(docs);
-    });
+      await model.create(data, (err, docs) => {
+        res.status(201).send(docs);
+      });
+    }
   } catch (error) {
     httpError(res, error);
   }
@@ -61,16 +65,19 @@ exports.updateScoreById = async (req, res) => {
   try {
     const id = req.params.id;
     const data = req.body;
-    await validations.validate(req, res);
+    const errors = validations.validate(req);
 
-    const doc = await model.findById({ _id: parseId(id) });
-    if (!doc)
-      return res.status(404).send({ message: "La puntuacion no existe" });
-    
-    await model.updateOne({ _id: parseId(id) }, data);
-    const score = await model.findById({ _id: parseId(id) });
-    res.status(200).send(score);
+    if (errors) {
+      return res.status(406).send(errors);
+    } else {
+      const doc = await model.findById({ _id: parseId(id) });
+      if (!doc)
+        return res.status(404).send({ message: "La puntuacion no existe" });
 
+      await model.updateOne({ _id: parseId(id) }, data);
+      const score = await model.findById({ _id: parseId(id) });
+      return res.status(200).send(score);
+    }
   } catch (error) {
     httpError(res, error);
   }

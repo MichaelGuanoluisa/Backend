@@ -75,20 +75,21 @@ exports.getInscriptions = async (req, res) => {
   }
 };
 
-/*
 exports.deleteInscriptionById = (req, res) => {
   try {
     const id = req.params.id;
+    const token = req.headers["x-access-token"];
+    const decoded = auth.decoded(token);
 
-    model.deleteOne({ _id: parseId(id) }, (err, docs) => {
-      if (err) {
-        res.send({ error: err });
-      } else {
-        res.send({ message: "borrado con exito" });
+    const doc = model.findById({ _id: parseId(id) });
+    if (!doc) return res.status(404).send({ message: "evento no encontrado" });
+
+    for (let i = 0; i < doc.inscriptions.length; i++) {
+      if (decoded.id === doc.inscriptions[i]) {
+        doc.inscriptions.splice(i, 1);
       }
-    });
+    }
   } catch (error) {
     httpError(res, error);
   }
 };
-*/

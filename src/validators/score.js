@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const { Error } = require("../helpers/validateError");
 
-exports.validate = (req, res) => {
+exports.validate = (req) => {
   const { score, questionary_id } = req.body;
   const message = { error: [] };
   if (!score) {
@@ -13,15 +12,15 @@ exports.validate = (req, res) => {
   if (!questionary_id) {
     message.error.push("El cuestionario es requerido");
   }
-  if (typeof questionary_id != mongoose.Types.ObjectId) {
+  if (typeof questionary_id !== mongoose.Types.ObjectId) {
     message.error.push("El id del cuestionario tiene un formato incorrecto");
   }
-  if (message.error.length != 0) {
-    Error(res, message);
+  if (message?.error?.length !== 0) {
+    return message;
   }
 };
 
-exports.validateUpdate = (req, res) => {
+exports.validateUpdate = (req) => {
   const { score, questionary_id } = req.body;
   const message = { error: [] };
   if (score) {
@@ -35,7 +34,7 @@ exports.validateUpdate = (req, res) => {
     }
   }
 
-  if (message.error.length != 0) {
-    Error(res, message);
+  if (message?.error?.length != 0) {
+    return message;
   }
 };

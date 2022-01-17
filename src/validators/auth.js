@@ -1,6 +1,4 @@
-const { Error } = require("../helpers/validateError");
-
-exports.validate = (req, res) => {
+exports.validate = (req) => {
   const { name, lastname, email, password } = req.body;
   const message = { error: [] };
   if (!name) {
@@ -14,7 +12,6 @@ exports.validate = (req, res) => {
       "El nombre tiene que ser de al menos 5 caracteres solo [a-z]"
     );
   }
-  console.log(lastname)
   if (!lastname) {
     message.error.push("El apellido es requerido");
   }
@@ -39,11 +36,11 @@ exports.validate = (req, res) => {
     message.error.push("La contraseña tiene que ser de al menos 8 caracteres");
   }
   if (message?.error?.length != 0) {
-    Error(res, message);
+    return message;
   }
 };
 
-exports.validateLogin = (req, res) => {
+exports.validateLogin = (req) => {
   const { email, password } = req.body;
   const messages = { error: [] };
 
@@ -51,17 +48,16 @@ exports.validateLogin = (req, res) => {
     messages.error.push("El correo es requerido");
   }
   if (typeof email != "string") {
-    console.log("hola aqui");
     messages.error.push("El correo tiene un formato incorrecto");
   }
+
   if (!password) {
     messages.error.push("La contraseña es requerida");
   }
-  if (password.length < 8) {
+  if (password?.length < 8) {
     messages.error.push("La contraseña tiene que ser de al menos 8 caracteres");
   }
-  console.log(messages?.error?.length);
   if (messages?.error?.length != 0) {
-    Error(res, messages);
+    return messages;
   }
 };

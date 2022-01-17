@@ -26,31 +26,35 @@ exports.fileUpload = (req, res, next) => {
 exports.createEvents = async (req, res) => {
   try {
     const data = req.body;
-    await validations.validate(req, res);
+    const errors = validations.validate(req, res);
 
-    const doc = await model.findOne({ title: data.title });
-    if (doc) {
-      unlink(path.resolve("./public/uploads/" + req.file.filename));
-      return res.status(406).send({ message: "El evento ya existe" });
-    }
-
-    if (req.file && req.file.filename) {
-      data.imgURL = req.file.filename;
-      console.log("si existe el url");
+    if (errors) {
+      return res.status(406).send(errors);
     } else {
-      data.imgURL = "ifgf.png";
-    }
-
-    model.create(data, (err, docs) => {
-      if (err) {
-        console.log("Error", err);
-        res
-          .status(422)
-          .send({ error: "El formato de datos ingresado es erroneo" });
-      } else {
-        res.status(201).send(docs);
+      const doc = await model.findOne({ title: data.title });
+      if (doc) {
+        unlink(path.resolve("./public/uploads/" + req.file.filename));
+        return res.status(406).send({ message: "El evento ya existe" });
       }
-    });
+
+      if (req.file && req.file.filename) {
+        data.imgURL = req.file.filename;
+        console.log("si existe el url");
+      } else {
+        data.imgURL = "ifgf.png";
+      }
+
+      model.create(data, (err, docs) => {
+        if (err) {
+          console.log("Error", err);
+          return res
+            .status(422)
+            .send({ error: "El formato de datos ingresado es erroneo" });
+        } else {
+          return es.status(201).send(docs);
+        }
+      });
+    }
   } catch (error) {
     httpError(res, error);
   }
@@ -87,25 +91,29 @@ exports.updateEventsById = async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
-    await validations.validateUpdate(req, res);
+    const errors = validations.validateUpdate(req, res);
 
-    const event = await model.findById({ _id: parseId(id) });
-    if (!event) {
-      unlink(path.resolve("./public/uploads/" + req.file.filename));
-      return res
-        .status(404)
-        .send({ message: "El evento que desea actualizar no existe" });
-    }
-
-    if (req.file && req.file.filename) {
-      body.imgURL = req.file.filename;
-      unlink(path.resolve("./public/uploads/" + event.imgURL));
+    if (errors) {
+      return res.status(406).send(errors);
     } else {
-      body.imgURL = event.imgURL;
+      const event = await model.findById({ _id: parseId(id) });
+      if (!event) {
+        unlink(path.resolve("./public/uploads/" + req.file.filename));
+        return res
+          .status(404)
+          .send({ message: "El evento que desea actualizar no existe" });
+      }
+
+      if (req.file && req.file.filename) {
+        body.imgURL = req.file.filename;
+        unlink(path.resolve("./public/uploads/" + event.imgURL));
+      } else {
+        body.imgURL = event.imgURL;
+      }
+      await model.updateOne({ _id: parseId(id) }, body);
+      const doc = await model.findById({ _id: parseId(id) });
+      return res.status(200).send(doc);
     }
-    await model.updateOne({ _id: parseId(id) }, body);
-    const doc = await model.findById({ _id: parseId(id) });
-    res.status(200).send(doc);
   } catch (error) {
     httpError(res, error);
   }

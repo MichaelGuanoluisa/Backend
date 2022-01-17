@@ -8,31 +8,37 @@ const validations = require("../validators/auth");
 exports.register = async (req, res) => {
   try {
     const { name, lastname, cellphone, email, password, roles } = req.body;
-    await validations.validate(req, res);
-    const user = await User.findOne({ email: email });
-
-    if (!user) {
-      const newUser = new User({
-        name,
-        lastname,
-        email,
-        cellphone,
-        password: await User.encryptPassword(password),
-      });
-
-      if (roles) {
-        const foundRoles = await Role.find({ name: { $in: roles } });
-        newUser.roles = foundRoles.map((role) => role._id);
-      } else {
-        const role = await Role.findOne({ name: "user" });
-        newUser.roles = [role._id];
-      }
-
-      //guardar usuario
-      await newUser.save();
-      res.status(200).send({ message: "Usuario registrado con exito" });
+    const errors = validations.validate(req);
+    if (errors) {
+      return res.status(406).send(errors);
     } else {
-      res.send({ message: "Este usuario ya esta registrado" });
+      const user = await User.findOne({ email: email });
+
+      if (!user) {
+        const newUser = new User({
+          name,
+          lastname,
+          email,
+          cellphone,
+          password: await User.encryptPassword(password),
+        });
+
+        if (roles) {
+          const foundRoles = await Role.find({ name: { $in: roles } });
+          newUser.roles = foundRoles.map((role) => role._id);
+        } else {
+          const role = await Role.findOne({ name: "user" });
+          newUser.roles = [role._id];
+        }
+
+        //guardar usuario
+        await newUser.save();
+        return res
+          .status(200)
+          .send({ message: "Usuario registrado con exito" });
+      } else {
+        return res.send({ message: "Este usuario ya esta registrado" });
+      }
     }
   } catch (e) {
     httpError(res, e);
@@ -41,32 +47,35 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    await validations.validateLogin(req, res);
+    const errors = validations.validateLogin(req);
+    if (errors) {
+      return res.status(406).send(errors);
+    } else {
+      const user = await User.findOne({ email: req.body.email });
 
-    const user = await User.findOne({ email: req.body.email });
+      if (!user) {
+        return res.status(404).send({ message: "usuario no encontrado" });
+      }
 
-    if (!user) {
-      return res.status(404).send({ message: "usuario no encontrado" });
+      const roles = await Role.find({ _id: { $in: user.roles } });
+      const roleName = await roles[0].name;
+
+      const matchPassword = await User.comparePassword(
+        req.body.password,
+        user.password
+      );
+
+      if (!matchPassword) {
+        return res.status(401).send({ message: "Contraseña incorrecta" });
+      }
+
+      const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+        expiresIn: 86400, //24h
+      });
+
+      const data = concat(user, token, roleName);
+      return res.status(200).send(data);
     }
-
-    const roles = await Role.find({ _id: { $in: user.roles } });
-    const roleName = await roles[0].name;
-
-    const matchPassword = await User.comparePassword(
-      req.body.password,
-      user.password
-    );
-
-    if (!matchPassword) {
-      return res.status(401).send({ message: "Contraseña incorrecta" });
-    }
-
-    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
-      expiresIn: 86400, //24h
-    });
-
-    const data = concat(user, token, roleName);
-    return res.status(200).send(data);
   } catch (e) {
     httpError(res, e);
   }

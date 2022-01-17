@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
     if (!user)
       return res.status(400).send("user with given email doesn't exist");
 
-    const link = `${process.env.BASE_URL}/passwordReset/${user._id}`;
+    const link = `${process.env.BASE_URL}/password-reset/${user._id}`;
     await sendEmail(user.email, "Password reset", link);
 
     res.send("password reset link sent to your email account");

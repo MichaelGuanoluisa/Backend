@@ -26,30 +26,26 @@ exports.fileUpload = (req, res, next) => {
 exports.createNews = async (req, res) => {
   try {
     const data = req.body;
-    console.log(req.body);
-    await validations.validate(req, res);
+    const errors = validations.validate(req, res);
 
-    const doc = await model.findOne({ title: data.title });
-    if (doc) {
-      unlink(path.resolve("./public/uploads/" + req.file.filename));
-      return res.status(406).send({ message: "La noticia ya existe" });
-    }
-
-    if (req.file && req.file.filename) {
-      data.imgURL = `${req.file.filename}`;
+    if (errors) {
+      return res.status(406).send(errors);
     } else {
-      data.imgURL = "ifgf.png";
-    }
-    await model.create(data, (err, docs) => {
-      if (err) {
-        console.log("Error", err);
-        res
-          .status(422)
-          .json({ error: "El formato de datos ingresado es erroneo" });
-      } else {
-        res.status(201).send(docs);
+      const doc = await model.findOne({ title: data.title });
+      if (doc) {
+        unlink(path.resolve("./public/uploads/" + req.file.filename));
+        return res.status(406).send({ message: "La noticia ya existe" });
       }
-    });
+
+      if (req.file && req.file.filename) {
+        data.imgURL = `${req.file.filename}`;
+      } else {
+        data.imgURL = "ifgf.png";
+      }
+      await model.create(data, (err, docs) => {
+        return res.status(201).send(docs);
+      });
+    }
   } catch (error) {
     httpError(res, error);
   }
@@ -86,26 +82,30 @@ exports.updateNewsById = async (req, res) => {
   try {
     const id = req.params.id;
     const news = req.body;
-    await validations.validateUpdate(req, res);
+    const errors = validations.validateUpdate(req);
 
-    const doc = await model.findById({ _id: parseId(id) });
-    if (!doc) {
-      unlink(path.resolve("./public/uploads/" + req.file.filename));
-      return res
-        .status(406)
-        .send({ message: "La noticia que desea actualizar no existe" });
-    }
-
-    if (req.file && req.file.filename) {
-      news.imgURL = req.file.filename;
-      unlink(path.resolve("./public/uploads/" + doc.imgURL));
+    if (errors) {
+      return res.status(406).send(errors);
     } else {
-      news.imgURL = notice.imgURL;
-    }
+      const doc = await model.findById({ _id: parseId(id) });
+      if (!doc) {
+        unlink(path.resolve("./public/uploads/" + req.file.filename));
+        return res
+          .status(406)
+          .send({ message: "La noticia que desea actualizar no existe" });
+      }
 
-    await model.updateOne({ _id: parseId(id) }, news);
-    const response = await model.findById({ _id: parseId(id) });
-    res.status(200).send(response);
+      if (req.file && req.file.filename) {
+        news.imgURL = req.file.filename;
+        unlink(path.resolve("./public/uploads/" + doc.imgURL));
+      } else {
+        news.imgURL = notice.imgURL;
+      }
+
+      await model.updateOne({ _id: parseId(id) }, news);
+      const response = await model.findById({ _id: parseId(id) });
+      return res.status(200).send(response);
+    }
   } catch (error) {
     httpError(res, error);
   }
