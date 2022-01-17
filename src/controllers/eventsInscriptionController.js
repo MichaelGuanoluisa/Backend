@@ -75,7 +75,7 @@ exports.getInscriptions = async (req, res) => {
   }
 };
 
-exports.deleteInscriptionById = (req, res) => {
+exports.deleteInscriptionById = async (req, res) => {
   try {
     const id = req.params.id;
     const token = req.headers["x-access-token"];
@@ -89,6 +89,10 @@ exports.deleteInscriptionById = (req, res) => {
         doc.inscriptions.splice(i, 1);
       }
     }
+
+    await model.updateOne({ _id: parseId(id) });
+    const event = model.findById({ _id: parseId(id) });
+    return res.status(200).send(event);
   } catch (error) {
     httpError(res, error);
   }
