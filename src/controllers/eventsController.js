@@ -45,14 +45,7 @@ exports.createEvents = async (req, res) => {
       }
 
       model.create(data, (err, docs) => {
-        if (err) {
-          console.log("Error", err);
-          return res
-            .status(422)
-            .send({ error: "El formato de datos ingresado es erroneo" });
-        } else {
-          return es.status(201).send(docs);
-        }
+        return res.status(201).send(docs);
       });
     }
   } catch (error) {

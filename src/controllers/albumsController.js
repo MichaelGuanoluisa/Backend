@@ -38,9 +38,9 @@ exports.createAlbums = async (req, res) => {
       }
 
       if (req.file && req.file.filename) {
-        doc.imgURL = `${req.file.filename}`;
+        data.imgURL = `${req.file.filename}`;
       } else {
-        doc.imgURL = "ifgf.png";
+        data.imgURL = "ifgf.png";
       }
 
       await model.create(data, (err, docs) => {
