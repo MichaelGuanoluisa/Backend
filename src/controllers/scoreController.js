@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const questionnaireModel = require("../models/questionary");
 const model = require("../models/score");
 const auth = require("./authController");
 const { httpError } = require("../helpers/handleError");
@@ -17,7 +18,8 @@ exports.createScore = async (req, res) => {
     if (errors) {
       return res.status(406).send(errors);
     } else {
-      const doc = await model.findById({ _id: parseId(data.questionary_id) });
+      console.log('qid', data.questionary_id)
+      const doc = await questionnaireModel.findById({ _id: parseId(data.questionary_id) });
       if (!doc)
         return res.status(404).send({ message: "El cuestionario no existe" });
 
