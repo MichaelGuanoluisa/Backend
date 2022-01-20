@@ -38,7 +38,9 @@ exports.validate = (req, res, next) => {
   }
 
   if (message?.error?.length !== 0) {
-    unlink(path.resolve("./public/uploads/" + req.file.filename));
+    if (req.file?.filename) {
+      unlink(path.resolve("./public/uploads/" + req.file.filename));
+    }
     return message;
   }
 };
