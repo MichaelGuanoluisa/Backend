@@ -3,11 +3,12 @@ const mongoose = require("mongoose");
 exports.validate = (req) => {
   const { score, questionary_id } = req.body;
   const message = { error: [] };
-  if (!score) {
-    message.error.push("El titulo es requerido");
+  console.log({score})
+  if (typeof score === 'undefined') {
+    message.error.push("La puntuación es requerida");
   }
   if (typeof score !== "number") {
-    message.error.push("El titulo tiene un formato incorrecto");
+    message.error.push("El puntuación tiene un formato incorrecto");
   }
   if (!questionary_id) {
     message.error.push("El cuestionario es requerido");
