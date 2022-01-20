@@ -36,8 +36,16 @@ exports.validate = (req) => {
 
 exports.validateUpdate = (req) => {
   const { description, type, title, url } = req.body;
+  const id = req.params.id;
   const message = { error: [] };
 
+  if (id) {
+    if (id.length < 24) {
+      message.error.push("El id es incorrecto");
+    }
+  } else {
+    message.error.push("El id es incorrecto");
+  }
   if (title) {
     if (typeof title !== "string") {
       message.error.push("El titulo ingresado es incorrecto");

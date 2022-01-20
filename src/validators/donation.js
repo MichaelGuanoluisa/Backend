@@ -59,8 +59,16 @@ exports.validate = (req) => {
 
 exports.validateUpdate = (req) => {
   const { description, type, delivery, address, date } = req.body;
+  const id = req.params.id;
   const messages = { error: [] };
 
+  if (id) {
+    if (id.length < 24) {
+      messages.error.push("El id es incorrecto");
+    }
+  } else {
+    messages.error.push("El id es incorrecto");
+  }
   if (description) {
     if (typeof description !== "string") {
       messages.error.push("La descripcion tiene un formato incorrecto");
