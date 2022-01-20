@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 //carpetas publicas
-app.use(express.static("uploads"));
+app.use(express.static("public/uploads"));
 
 //rutas
 app.use("/api", routes);
