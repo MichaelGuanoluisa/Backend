@@ -1,5 +1,6 @@
 const { unlink } = require("fs-extra");
 const path = require("path");
+const mongoose = require("mongoose");
 
 exports.validate = (req, res, next) => {
   const { description, title, schedule, location, cost } = req.body;
@@ -37,15 +38,25 @@ exports.validate = (req, res, next) => {
   }
 
   if (message?.error?.length !== 0) {
-    unlink(path.resolve("./public/uploads/" + req.file.filename));
+    if (req.file?.filename) {
+      unlink(path.resolve("./public/uploads/" + req.file.filename));
+    }
     return message;
   }
 };
 
 exports.validateUpdate = (req, res, next) => {
   const { description, title, schedule, location, cost } = req.body;
+  const id = req.params.id;
   const message = { error: [] };
 
+  if (id) {
+    if (id.length < 24) {
+      message.error.push("El id es incorrecto");
+    }
+  } else {
+    message.error.push("El id es incorrecto");
+  }
   if (title) {
     if (typeof title !== "string") {
       message.error.push("El titulo ingresado es incorrecto");
@@ -77,6 +88,9 @@ exports.validateUpdate = (req, res, next) => {
   }
 
   if (message?.error?.length !== 0) {
+    if (req.file?.filename) {
+      unlink(path.resolve("./public/uploads/" + req.file.filename));
+    }
     return message;
   }
 };

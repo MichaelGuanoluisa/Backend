@@ -5,6 +5,7 @@ const { verifyToken, isAdmin } = require("../middlewares/authorization");
 
 router.post("/", [verifyToken, isAdmin], questionaryCtrl.createQuestionary);
 router.get("/", [verifyToken], questionaryCtrl.getQuestionary);
+router.get("/:id", [verifyToken], questionaryCtrl.getQuestionaryById);
 router.put(
   "/:id",
   [verifyToken, isAdmin],

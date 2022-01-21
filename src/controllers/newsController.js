@@ -33,7 +33,9 @@ exports.createNews = async (req, res) => {
     } else {
       const doc = await model.findOne({ title: data.title });
       if (doc) {
-        unlink(path.resolve("./public/uploads/" + req.file.filename));
+        if (req.file?.filename) {
+          unlink(path.resolve("./public/uploads/" + req.file?.filename));
+        }
         return res.status(406).send({ message: "La noticia ya existe" });
       }
 
@@ -89,7 +91,9 @@ exports.updateNewsById = async (req, res) => {
     } else {
       const doc = await model.findById({ _id: parseId(id) });
       if (!doc) {
-        unlink(path.resolve("./public/uploads/" + req.file.filename));
+        if (req.file?.filename) {
+          unlink(path.resolve("./public/uploads/" + req.file?.filename));
+        }
         return res
           .status(406)
           .send({ message: "La noticia que desea actualizar no existe" });

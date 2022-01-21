@@ -8,7 +8,7 @@ const {
 } = require("../middlewares/authorization");
 
 router.post("/", [verifyToken, isUser], scoreCtrl.createScore);
-router.get("/", [verifyToken, isAdmin], scoreCtrl.getScore);
+router.get("/", [verifyToken], scoreCtrl.getScore);
 router.put("/:id", [verifyToken, isUser], scoreCtrl.updateScoreById);
 router.delete("/:id", [verifyToken, isAdmin], scoreCtrl.deleteScoreById);
 

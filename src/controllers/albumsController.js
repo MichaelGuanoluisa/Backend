@@ -33,7 +33,9 @@ exports.createAlbums = async (req, res) => {
     } else {
       const doc = await model.findOne({ title: data.title });
       if (doc) {
-        unlink(path.resolve("./public/uploads/" + req.file.filename));
+        if (req.file?.filename) {
+          unlink(path.resolve("./public/uploads/" + req.file?.filename));
+        }
         return res.status(406).send({ message: "La foto ya existe" });
       }
 
@@ -91,7 +93,7 @@ exports.updateAlbumsById = async (req, res) => {
       const album = await model.findById({ _id: parseId(id) });
 
       if (!album) {
-        if (req.file.filename) {
+        if (req.file?.filename) {
           unlink(path.resolve("./public/uploads/" + req.file.filename));
         }
         return res
