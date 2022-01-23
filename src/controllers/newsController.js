@@ -103,7 +103,7 @@ exports.updateNewsById = async (req, res) => {
         news.imgURL = req.file.filename;
         unlink(path.resolve("./public/uploads/" + doc.imgURL));
       } else {
-        news.imgURL = notice.imgURL;
+        news.imgURL = doc.imgURL;
       }
 
       await model.updateOne({ _id: parseId(id) }, news);

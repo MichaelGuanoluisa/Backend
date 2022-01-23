@@ -21,10 +21,6 @@ router.put(
   donationsCtrl.fileUpload,
   donationsCtrl.updateDonationsById
 );
-router.delete(
-  "/:id",
-  [verifyToken, isAdmin],
-  donationsCtrl.deleteDonationsById
-);
+router.delete("/:id", [verifyToken], donationsCtrl.deleteDonationsById);
 
 module.exports = router;

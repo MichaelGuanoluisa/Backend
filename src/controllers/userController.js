@@ -30,7 +30,7 @@ exports.getUsersById = async (req, res) => {
 exports.getUsers = async (req, res) => {
   const users = await model.find({});
   if (!users) {
-    res.status(404).send({});
+    res.status(404).send({ message: "no se encontraron usuarios" });
   } else {
     res.status(200).send(users);
   }

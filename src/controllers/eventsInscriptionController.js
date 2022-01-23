@@ -84,14 +84,14 @@ exports.deleteInscriptionById = async (req, res) => {
     const doc = model.findById({ _id: parseId(id) });
     if (!doc) return res.status(404).send({ message: "evento no encontrado" });
 
-    for (let i = 0; i < doc.inscriptions.length; i++) {
+    for (let i = 0; i < doc.inscriptions?.length; i++) {
       if (decoded.id === doc.inscriptions[i]) {
         doc.inscriptions.splice(i, 1);
       }
     }
 
-    await model.updateOne({ _id: parseId(id) });
-    const event = model.findById({ _id: parseId(id) });
+    await model.updateOne({ _id: parseId(id) }, doc);
+    const event = await model.findById({ _id: parseId(id) });
     return res.status(200).send(event);
   } catch (error) {
     httpError(res, error);
