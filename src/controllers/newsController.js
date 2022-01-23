@@ -5,6 +5,7 @@ const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
 const { httpError } = require("../helpers/handleError");
 const path = require("path");
+const fs = require("fs");
 const validations = require("../validators/info");
 
 const parseId = (id) => {
@@ -125,7 +126,9 @@ exports.deleteNewsById = async (req, res) => {
         .send({ message: "La noticia que desea eliminar no existe" });
 
     if (doc.imgURL != "ifgf.png") {
-      unlink(path.resolve("./public/uploads/" + doc.imgURL));
+      if (fs.existsSync(path.resolve("./public/uploads/" + doc.imgURL))) {
+        unlink(path.resolve("./public/uploads/" + doc.imgURL));
+      }
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {

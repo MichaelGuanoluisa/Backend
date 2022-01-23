@@ -6,6 +6,7 @@ const { unlink } = require("fs-extra");
 const path = require("path");
 const { httpError } = require("../helpers/handleError");
 const validations = require("../validators/info");
+const fs = require("fs");
 
 const parseId = (id) => {
   return mongoose.Types.ObjectId(id);
@@ -127,7 +128,9 @@ exports.deleteAlbumsById = async (req, res) => {
         .send({ message: "La foto que desea borrar no existe" });
 
     if (doc.imgURL != "ifgf.png") {
-      unlink(path.resolve("./public/uploads/" + doc.imgURL));
+      if (fs.existsSync(path.resolve("./public/uploads/" + doc.imgURL))) {
+        unlink(path.resolve("./public/uploads/" + doc.imgURL));
+      }
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {

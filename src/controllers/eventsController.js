@@ -5,6 +5,7 @@ const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
 const { httpError } = require("../helpers/handleError");
 const path = require("path");
+const fs = require("fs");
 const validations = require("../validators/event");
 
 const parseId = (id) => {
@@ -124,7 +125,9 @@ exports.deleteEventsById = async (req, res) => {
       return res.send({ message: "El evento que desea borrar no existe" }, 204);
 
     if (doc.imgURL != "ifgf.png") {
-      unlink(path.resolve("./public/uploads/" + doc.imgURL));
+      if (fs.existsSync(path.resolve("./public/uploads/" + doc.imgURL))) {
+        unlink(path.resolve("./public/uploads/" + doc.imgURL));
+      }
     }
     res.send({ message: "Eliminado con exito" });
   } catch (error) {
