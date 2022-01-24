@@ -18,13 +18,13 @@ exports.verifyToken = async (req, res, next) => {
     //comprobar si el usuario existe
     const user = await User.findById(req.userId, { password: 0 });
     if (!user)
-      return res.status(404).json({ message: "usuario no registrado" });
+      return res.status(404).json({ message: "Usuario no registrado" });
 
     data = req.body;
     //si existe continua
     next();
   } catch (error) {
-    return res.status(401).json({ message: "token invalido" });
+    return res.status(401).json({ message: "Token inválido" });
   }
 };
 
@@ -40,7 +40,7 @@ exports.isAdmin = async (req, res, next) => {
     if (roles[i].name === "admin") {
       return next();
     } else {
-      return res.status(403).json({ message: "requiere rol administrador" });
+      return res.status(403).json({ message: "Requiere rol administrador" });
     }
   }
 };
@@ -53,7 +53,7 @@ exports.isUser = async (req, res, next) => {
     if (roles[i].name === "user") {
       return next();
     } else {
-      return res.status(403).json({ message: "requiere iniciar sesion" });
+      return res.status(403).json({ message: "Inicie sesión" });
     }
   }
 };

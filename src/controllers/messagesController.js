@@ -5,6 +5,7 @@ const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
 const { httpError } = require("../helpers/handleError");
 const path = require("path");
+const fs = require("fs");
 const validations = require("../validators/info");
 
 const parseId = (id) => {
@@ -36,7 +37,7 @@ exports.createMessages = async (req, res) => {
         if (req.file?.filename) {
           unlink(path.resolve("./public/uploads/" + req.file?.filename));
         }
-        return res.status(406).send({ message: "El mensaje ya existe" });
+        return res.status(400).send({ message: "El mensaje ya existe" });
       }
 
       if (req.file && req.file.filename) {
@@ -126,9 +127,11 @@ exports.deleteMessagesById = async (req, res) => {
         .send({ message: "El mensaje que desea borrar no existe" });
 
     if (doc.imgURL != "ifgf.png") {
-      unlink(path.resolve("./public/uploads/" + doc.imgURL));
+      if (fs.existsSync(path.resolve("./public/uploads/" + doc.imgURL))) {
+        unlink(path.resolve("./public/uploads/" + doc.imgURL));
+      }
     }
-    res.send({ message: "Eliminado con exito" });
+    res.send({ message: "Eliminado con éxito" });
   } catch (error) {
     httpError(res, error);
   }

@@ -15,9 +15,7 @@ exports.validate = (req) => {
     message.error.push("El tipo de video es requerido");
   }
   if (type !== "niños" && type !== "familia" && type !== "jovenes") {
-    message.error.push(
-      "La donacion debe ser uno de 3 tipos: niños, jovenes o familia"
-    );
+    message.error.push("La opción de tipo de video no es permitida");
   }
   if (typeof type !== "string") {
     message.error.push("El tipo de video tiene un formato incorrecto");
@@ -59,9 +57,7 @@ exports.validateUpdate = (req) => {
   }
   if (type) {
     if (type !== "niños" && type !== "familia" && type !== "jovenes") {
-      message.error.push(
-        "La donacion debe ser uno de 3 tipos: niños, jovenes o familia"
-      );
+      message.error.push("La opción de tipo de video no es permitida");
     }
     if (typeof type !== "string") {
       message.error.push("El tipo de video tiene un formato incorrecto");

@@ -18,8 +18,10 @@ exports.createScore = async (req, res) => {
     if (errors) {
       return res.status(406).send(errors);
     } else {
-      console.log('qid', data.questionary_id)
-      const doc = await questionnaireModel.findById({ _id: parseId(data.questionary_id) });
+      console.log("qid", data.questionary_id);
+      const doc = await questionnaireModel.findById({
+        _id: parseId(data.questionary_id),
+      });
       if (!doc)
         return res.status(404).send({ message: "El cuestionario no existe" });
 
@@ -95,7 +97,7 @@ exports.deleteScoreById = async (req, res) => {
         .status(404)
         .send({ message: "La puntuacion que desea borrar no existe" });
 
-    res.send({ message: "Eliminado con exito" });
+    res.send({ message: "Eliminado con éxito" });
   } catch (error) {
     httpError(res, error);
   }

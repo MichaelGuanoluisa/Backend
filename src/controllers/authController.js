@@ -35,9 +35,11 @@ exports.register = async (req, res) => {
         await newUser.save();
         return res
           .status(200)
-          .send({ message: "Usuario registrado con exito" });
+          .send({ message: "Usuario registrado con éxito" });
       } else {
-        return res.send({ message: "Este usuario ya esta registrado" });
+        return res
+          .status(400)
+          .send({ message: "Este usuario ya esta registrado" });
       }
     }
   } catch (e) {

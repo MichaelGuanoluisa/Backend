@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const model = require("../models/donations");
+const User = require("../models/users");
 const multer = require("multer");
 const multerConfig = require("../libs/multerConfig");
 const { unlink } = require("fs-extra");
@@ -7,6 +8,7 @@ const { httpError } = require("../helpers/handleError");
 const path = require("path");
 const auth = require("./authController");
 const validations = require("../validators/donation");
+const fs = require("fs");
 
 const parseId = (id) => {
   return mongoose.Types.ObjectId(id);
@@ -50,7 +52,8 @@ exports.createDonations = async (req, res) => {
             .status(422)
             .send({ error: "El formato de datos ingresado es erroneo" });
         } else {
-          res.status(201).send(doc);
+          const response = this.populateUser(doc);
+          res.status(201).send(response);
         }
       });
     }
@@ -65,7 +68,9 @@ exports.getDonations = async (req, res) => {
     if (!docs) {
       res.status(404).send({});
     } else {
-      res.status(200).send(docs);
+      const users = await User.find({});
+      const response = populateUsers(docs, users);
+      res.status(200).send(response);
     }
   } catch (error) {
     httpError(res, error);
@@ -75,11 +80,15 @@ exports.getDonations = async (req, res) => {
 exports.getDonationsById = async (req, res) => {
   try {
     const id = req.params.id;
+
     const doc = await model.findById({ _id: parseId(id) });
+
     if (!doc) {
       res.status(404).send({});
     } else {
-      res.status(200).send(doc);
+      const user = await User.findById({ _id: doc.user_id });
+      const response = populateUser(doc, user);
+      res.status(200).send(response);
     }
   } catch (error) {
     httpError(res, error);
@@ -115,7 +124,9 @@ exports.updateDonationsById = async (req, res) => {
 
       await model.updateOne({ _id: parseId(id) }, body);
       const doc = await model.findById({ _id: parseId(id) });
-      return res.status(200).send(doc);
+
+      const response = this.populateUser(doc);
+      return res.status(200).send(response);
     }
   } catch (error) {
     httpError(res, error);
@@ -127,16 +138,65 @@ exports.deleteDonationsById = async (req, res) => {
     const id = req.params.id;
     const doc = await model.findOneAndDelete({ _id: parseId(id) });
     if (!doc)
-      return res.send(
-        { message: "La donacion que desea borrar no existe" },
-        404
-      );
+      return res
+        .status(404)
+        .send({ message: "La donacion que desea borrar no existe" });
 
-    if (doc.imgURL != "ifgf.png") {
-      unlink(path.resolve("./public/uploads/" + doc.imgURL));
+    if (doc.imgURL !== "ifgf.png") {
+      if (fs.existsSync(path.resolve("./public/uploads/" + doc.imgURL))) {
+        unlink(path.resolve("./public/uploads/" + doc.imgURL));
+      }
     }
-    res.send({ message: "Eliminado con exito" });
+    res.send({ message: "Eliminado con éxito" });
   } catch (error) {
     httpError(res, error);
   }
 };
+
+function populateUsers(data, users) {
+  const donation = data;
+  const jsonResponse = [];
+  const json = {};
+  for (const doc of donation) {
+    for (const user of users) {
+      if (JSON.stringify(doc.user_id) === JSON.stringify(user._id)) {
+        json._id = doc._id;
+        json.user_id = doc.user_id;
+        json.name = user.name;
+        json.lastname = user.lastname;
+        json.email = user.email;
+        json.description = doc.description;
+        json.type = doc.type;
+        json.delivery = doc.delivery;
+        json.address = doc.address;
+        json.date = doc.date;
+        json.status = doc.status;
+        json.message = doc.message;
+        json.imgURL = doc.imgURL;
+        jsonResponse.push(json);
+      }
+    }
+  }
+  return jsonResponse;
+}
+
+function populateUser(data, user) {
+  const donation = data;
+  const jsonResponse = {};
+
+  jsonResponse._id = donation._id;
+  jsonResponse.user_id = donation.user_id;
+  jsonResponse.name = user.name;
+  jsonResponse.lastname = user.lastname;
+  jsonResponse.email = user.email;
+  jsonResponse.description = donation.description;
+  jsonResponse.type = donation.type;
+  jsonResponse.delivery = donation.delivery;
+  jsonResponse.address = donation.address;
+  jsonResponse.date = donation.date;
+  jsonResponse.status = donation.status;
+  jsonResponse.message = donation.message;
+  jsonResponse.imgURL = donation.imgURL;
+
+  return jsonResponse;
+}

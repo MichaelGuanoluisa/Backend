@@ -5,11 +5,8 @@ exports.validate = (req) => {
   const { description, type, delivery, address, date } = req.body;
   const message = { error: [] };
 
-  if (!description) {
-    message.error.push("La descripcion es requerida");
-  }
   if (typeof description !== "string") {
-    message.error.push("La descripcion tiene un formato incorrecto");
+    message.error.push("La descripción tiene un formato incorrecto");
   }
   if (!type) {
     message.error.push("El tipo de donacion es requerida");
@@ -27,12 +24,12 @@ exports.validate = (req) => {
     message.error.push("La entrega es requerida");
   }
   if (
-    delivery !== "retirar en domicilio" &&
-    delivery !== "entregar en iglesia"
+    delivery !== "entrega vía transacción" &&
+    delivery !== "entrega en iglesia" &&
+    delivery !== "entrega vía servicio" &&
+    delivery !== "retiro en el hogar"
   ) {
-    message.error.push(
-      "La opcion de entrega puede ser de 2 tipos: retirar en domicilio o entregar en iglesia"
-    );
+    message.error.push("La opcion de entrega no es permitida");
   }
   if (typeof delivery !== "string") {
     message.error.push("La entrega tiene un formato incorrecto");
@@ -76,7 +73,7 @@ exports.validateUpdate = (req) => {
   }
 
   if (type) {
-    if (type !== "comida" || type !== "ropa" || type !== "dinero") {
+    if (type !== "comida" && type !== "ropa" && type !== "dinero") {
       messages.error.push(
         "La donacion debe ser uno de 3 tipos: comida, ropa o dinero"
       );
@@ -88,12 +85,12 @@ exports.validateUpdate = (req) => {
 
   if (delivery) {
     if (
-      delivery !== "retirar en domicilio" ||
-      delivery !== "entregar en iglesia"
+      delivery !== "entrega vía transacción" &&
+      delivery !== "entrega en iglesia" &&
+      delivery !== "entrega vía servicio" &&
+      delivery !== "retiro en el hogar"
     ) {
-      messages.error.push(
-        "La opcion de entrega puede ser de 2 tipos: retirar en domicilio o entregar en iglesia"
-      );
+      messages.error.push("La opcion de entrega no es permitida");
     }
     if (typeof delivery !== "string") {
       messages.error.push("La entrega tiene un formato incorrecto");

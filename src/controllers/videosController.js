@@ -10,13 +10,14 @@ const parseId = (id) => {
 exports.createVideos = async (req, res) => {
   try {
     const data = req.body;
+    console.log(data);
     const errors = validations.validate(req);
 
     if (errors) {
       return res.status(406).send(errors);
     } else {
       const doc = await model.findOne({ url: data.url });
-      if (doc) return res.status(406).send({ message: "El video ya existe" });
+      if (doc) return res.status(400).send({ message: "El video ya existe" });
 
       await model.create(data, (err, docs) => {
         return res.status(201).send(docs);
@@ -58,6 +59,7 @@ exports.updateVideosById = async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
+    console.log(body);
 
     const errors = validations.validateUpdate(req);
 
@@ -96,7 +98,7 @@ exports.deleteVideosById = async (req, res) => {
           .status(422)
           .send({ error: "El formato de datos ingresado es erroneo" });
       } else {
-        res.status(200).send({ message: "Eliminado con exito" });
+        res.status(200).send({ message: "Eliminado con éxito" });
       }
     });
   } catch (error) {
