@@ -160,11 +160,14 @@ function populateUsers(data, users) {
   for (const doc of donation) {
     for (const user of users) {
       if (JSON.stringify(doc.user_id) === JSON.stringify(user._id)) {
+        json.user = {
+          user_id: doc.user_id,
+          name: user.name,
+          lastname: user.lastname,
+          email: user.email,
+          cellphone: user.cellphone,
+        };
         json._id = doc._id;
-        json.user_id = doc.user_id;
-        json.name = user.name;
-        json.lastname = user.lastname;
-        json.email = user.email;
         json.description = doc.description;
         json.type = doc.type;
         json.delivery = doc.delivery;
