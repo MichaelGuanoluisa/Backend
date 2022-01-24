@@ -187,11 +187,14 @@ function populateUser(data, user) {
   const donation = data;
   const jsonResponse = {};
 
+  jsonResponse.user = {
+    user_id: donation.user_id,
+    name: user.name,
+    lastname: user.lastname,
+    email: user.email,
+    cellphone: user.cellphone,
+  };
   jsonResponse._id = donation._id;
-  jsonResponse.user_id = donation.user_id;
-  jsonResponse.name = user.name;
-  jsonResponse.lastname = user.lastname;
-  jsonResponse.email = user.email;
   jsonResponse.description = donation.description;
   jsonResponse.type = donation.type;
   jsonResponse.delivery = donation.delivery;
