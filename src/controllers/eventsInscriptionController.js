@@ -26,8 +26,8 @@ exports.createInscription = async (req, res) => {
       for (let i = 0; i < event.inscriptions.length; i++) {
         if (event.inscriptions[i].toString() === user_id) {
           return res
-            .status(406)
-            .send({ message: "usuario ya registrado al evento" });
+            .status(400)
+            .send({ message: "Este usuario ya esta registrado" });
         }
         json.inscriptions[i] = event.inscriptions[i].toString();
       }
@@ -47,7 +47,7 @@ exports.createInscription = async (req, res) => {
           console.log("Error", err);
           res.status(422).send({ error: "Body incorrecto" });
         } else {
-          res.send({ message: "usuario registrado con exito" });
+          res.send({ message: "Usuario registrado con exito" });
         }
       })
       .clone()

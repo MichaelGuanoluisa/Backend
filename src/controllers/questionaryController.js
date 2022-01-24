@@ -10,16 +10,20 @@ const parseId = (id) => {
 exports.createQuestionary = async (req, res) => {
   try {
     const data = req.body;
-    const errors = validations.validate(req, res);
+    console.log(data);
+    const errors = null;
 
     if (errors) {
       return res.status(406).send(errors);
     } else {
       const doc = await model.findOne({ name: data.name });
       if (doc)
-        return res.status(406).send({ message: "El cuestionario ya existe" });
+        return res.status(400).send({ message: "El cuestionario ya existe" });
 
       await model.create(data, (err, docs) => {
+        if (err) {
+          return res.status(400).send(err);
+        }
         return res.status(201).send(docs);
       });
     }
@@ -85,7 +89,7 @@ exports.deleteQuestionaryById = async (req, res) => {
         .status(404)
         .send({ message: "El cuestionario que desea borrar no existe" });
 
-    res.send({ message: "Eliminado con exito" });
+    res.send({ message: "Eliminado con éxito" });
   } catch (error) {
     httpError(res, error);
   }

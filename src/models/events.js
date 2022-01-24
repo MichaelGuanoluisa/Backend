@@ -18,6 +18,10 @@ const EventsScheme = new mongoose.Schema(
       type: String,
       require: true,
     },
+    date: {
+      type: String,
+      require: true,
+    },
     schedule: {
       type: String,
       require: true,

@@ -37,7 +37,7 @@ exports.createAlbums = async (req, res) => {
         if (req.file?.filename) {
           unlink(path.resolve("./public/uploads/" + req.file?.filename));
         }
-        return res.status(406).send({ message: "La foto ya existe" });
+        return res.status(400).send({ message: "La foto ya existe" });
       }
 
       if (req.file && req.file.filename) {
@@ -132,7 +132,7 @@ exports.deleteAlbumsById = async (req, res) => {
         unlink(path.resolve("./public/uploads/" + doc.imgURL));
       }
     }
-    res.send({ message: "Eliminado con exito" });
+    res.send({ message: "Eliminado con éxito" });
   } catch (error) {
     httpError(res, error);
   }

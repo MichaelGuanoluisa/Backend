@@ -87,7 +87,6 @@ exports.getDonationsById = async (req, res) => {
       res.status(404).send({});
     } else {
       const user = await User.findById({ _id: doc.user_id });
-      console.log(user);
       const response = populateUser(doc, user);
       res.status(200).send(response);
     }
@@ -148,7 +147,7 @@ exports.deleteDonationsById = async (req, res) => {
         unlink(path.resolve("./public/uploads/" + doc.imgURL));
       }
     }
-    res.send({ message: "Eliminado con exito" });
+    res.send({ message: "Eliminado con éxito" });
   } catch (error) {
     httpError(res, error);
   }
@@ -157,14 +156,23 @@ exports.deleteDonationsById = async (req, res) => {
 function populateUsers(data, users) {
   const donation = data;
   const jsonResponse = [];
-  const json = { user: {}, donation: {} };
+  const json = {};
   for (const doc of donation) {
     for (const user of users) {
       if (JSON.stringify(doc.user_id) === JSON.stringify(user._id)) {
-        json.user.name = user.name;
-        json.user.lastname = user.lastname;
-        json.user.email = user.email;
-        json.donation = doc;
+        json._id = doc._id;
+        json.user_id = doc.user_id;
+        json.name = user.name;
+        json.lastname = user.lastname;
+        json.email = user.email;
+        json.description = doc.description;
+        json.type = doc.type;
+        json.delivery = doc.delivery;
+        json.address = doc.address;
+        json.date = doc.date;
+        json.status = doc.status;
+        json.message = doc.message;
+        json.imgURL = doc.imgURL;
         jsonResponse.push(json);
       }
     }
@@ -174,12 +182,21 @@ function populateUsers(data, users) {
 
 function populateUser(data, user) {
   const donation = data;
-  const jsonResponse = { user: {}, donation: {} };
+  const jsonResponse = {};
 
-  jsonResponse.user.name = user.name;
-  jsonResponse.user.lastname = user.lastname;
-  jsonResponse.user.email = user.email;
-  jsonResponse.donation = donation;
+  jsonResponse._id = donation._id;
+  jsonResponse.user_id = donation.user_id;
+  jsonResponse.name = user.name;
+  jsonResponse.lastname = user.lastname;
+  jsonResponse.email = user.email;
+  jsonResponse.description = donation.description;
+  jsonResponse.type = donation.type;
+  jsonResponse.delivery = donation.delivery;
+  jsonResponse.address = donation.address;
+  jsonResponse.date = donation.date;
+  jsonResponse.status = donation.status;
+  jsonResponse.message = donation.message;
+  jsonResponse.imgURL = donation.imgURL;
 
   return jsonResponse;
 }

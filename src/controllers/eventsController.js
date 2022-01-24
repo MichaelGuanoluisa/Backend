@@ -37,7 +37,7 @@ exports.createEvents = async (req, res) => {
         if (req.file?.filename) {
           unlink(path.resolve("./public/uploads/" + req.file?.filename));
         }
-        return res.status(406).send({ message: "El evento ya existe" });
+        return res.status(400).send({ message: "El evento ya existe" });
       }
 
       if (req.file && req.file.filename) {
@@ -60,7 +60,7 @@ exports.getEvents = async (req, res) => {
   try {
     const docs = await model.find({});
     if (!docs) {
-      res.status(204).send({});
+      res.status(404).send({});
     } else {
       res.status(200).send(docs);
     }
@@ -74,7 +74,7 @@ exports.getEventsById = async (req, res) => {
     const id = req.params.id;
     const doc = await model.findById({ _id: parseId(id) });
     if (!doc) {
-      res.status(204).send({});
+      res.status(404).send({});
     } else {
       res.status(200).send(doc);
     }
@@ -129,7 +129,7 @@ exports.deleteEventsById = async (req, res) => {
         unlink(path.resolve("./public/uploads/" + doc.imgURL));
       }
     }
-    res.send({ message: "Eliminado con exito" });
+    res.send({ message: "Eliminado con éxito" });
   } catch (error) {
     httpError(res, error);
   }
