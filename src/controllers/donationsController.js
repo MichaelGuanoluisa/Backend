@@ -52,7 +52,7 @@ exports.createDonations = async (req, res) => {
             .status(422)
             .send({ error: "El formato de datos ingresado es erroneo" });
         } else {
-          const response = this.populateUser(doc);
+          const response = populateUser(doc);
           res.status(201).send(response);
         }
       });
