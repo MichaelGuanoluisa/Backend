@@ -3,8 +3,8 @@ const router = express.Router();
 const videosCtrl = require("../controllers/videosController");
 const { verifyToken, isAdmin } = require("../middlewares/authorization");
 
-router.get("/", [verifyToken], videosCtrl.getVideos);
-router.get("/:id", [verifyToken], videosCtrl.getVideosById);
+router.get("/", videosCtrl.getVideos);
+router.get("/:id", videosCtrl.getVideosById);
 router.post("/", [verifyToken, isAdmin], videosCtrl.createVideos);
 router.put("/:id", [verifyToken, isAdmin], videosCtrl.updateVideosById);
 router.delete("/:id", [verifyToken, isAdmin], videosCtrl.deleteVideosById);

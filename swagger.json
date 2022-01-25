@@ -1,0 +1,2385 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Iglesia IFGF API",
+    "description": "Api del proyecto Iglesia IFGF",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://backend-ifgf.herokuapp.com/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Autenticación",
+      "description": "Estos endpoints son para registrarse y para iniciar sesión."
+    },
+    {
+      "name": "Públicos",
+      "description": "Estos endpoints son públicos."
+    },
+    {
+      "name": "Noticias",
+      "description": "Estos endpoints son de noticias."
+    },
+    {
+      "name": "Fotos",
+      "description": "Estos endpoints son de fotos."
+    },
+    {
+      "name": "Mensajes biblícos",
+      "description": "Estos endpoints son de mensajes biblícos."
+    },
+    {
+      "name": "Donaciones",
+      "description": "Estos endpoints son de donaciones."
+    },
+    {
+      "name": "Eventos",
+      "description": "Estos endpoints son de eventos."
+    },
+    {
+      "name": "Juegos",
+      "description": "Estos endpoints son de juegos(cuestionarios)."
+    },
+    {
+      "name": "Puntajes",
+      "description": "Estos endpoints son de puntajes."
+    },
+    {
+      "name": "Videos",
+      "description": "Estos endpoints son de videos."
+    },
+    {
+      "name": "Inscripciones",
+      "description": "Estos endpoints son de inscripciones a eventos."
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Autenticación"],
+        "summary": "Registro de usuarios",
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/login"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200User"
+          },
+          "404": {
+            "$ref": "#/components/responses/404User"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Autenticación"],
+        "summary": "Registro de usuarios",
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/login"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Login"
+          },
+          "401": {
+            "$ref": "#/components/responses/401User"
+          },
+          "404": {
+            "$ref": "#/components/responses/404User"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/news": {
+      "get": {
+        "tags": ["Públicos", "Noticias"],
+        "summary": "Obtener noticias",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Info"
+          },
+          "404": {
+            "$ref": "#/components/responses/404User"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Noticias"],
+        "summary": "Insertar noticia",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/info"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201Info"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/news/{id}": {
+      "get": {
+        "tags": ["Noticias"],
+        "summary": "Obtener una noticia",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id de la noticia",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Info"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Noticias"],
+        "summary": "Actualizar noticia",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id de la noticia",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/info"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Info"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Update"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Noticias"],
+        "summary": "Actualizar noticia",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id de la noticia",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Delete"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/albums": {
+      "get": {
+        "tags": ["Públicos", "Fotos"],
+        "summary": "Obtener fotos",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Info"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Fotos"],
+        "summary": "Insertar noticia",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/info"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201Info"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/albums/{id}": {
+      "get": {
+        "tags": ["Fotos"],
+        "summary": "Obtener una foto",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id de la foto",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Info"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Fotos"],
+        "summary": "Actualizar foto",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id de la foto",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/info"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Info"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Update"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Fotos"],
+        "summary": "Actualizar foto",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id de la foto",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Delete"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/messages": {
+      "get": {
+        "tags": ["Públicos", "Mensajes biblícos"],
+        "summary": "Obtener mensajes biblícos",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Info"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Mensajes biblícos"],
+        "summary": "Insertar noticia",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/info"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201Info"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/messages/{id}": {
+      "get": {
+        "tags": ["Mensajes biblícos"],
+        "summary": "Obtener un mensaje biblíco",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del mensaje",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Info"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Mensajes biblícos"],
+        "summary": "Actualizar mensaje biblíco",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del mensaje",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/info"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Info"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Update"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Mensajes biblícos"],
+        "summary": "Actualizar mensaje biblíco",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del mensaje",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Delete"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/donations": {
+      "get": {
+        "tags": ["Donaciones"],
+        "summary": "Obtener donaciones",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Donations"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Donaciones"],
+        "summary": "Insertar donación",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/donations"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201Donations"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/donations/{id}": {
+      "get": {
+        "tags": ["Donaciones"],
+        "summary": "Obtener una donación",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id de la donación",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Donations"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Donaciones"],
+        "summary": "Actualizar donación",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id de la donación",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/donations"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Donations"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Update"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Donaciones"],
+        "summary": "Eliminar donación",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id de la donación",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Delete"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "tags": ["Públicos", "Eventos"],
+        "summary": "Obtener eventos",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Events"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Eventos"],
+        "summary": "Insertar eventos",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/events"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201Events"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/events/{id}": {
+      "get": {
+        "tags": ["Eventos"],
+        "summary": "Obtener un evento",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del evento",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Events"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Eventos"],
+        "summary": "Actualizar evento",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del evento",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/events"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Events"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Update"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Eventos"],
+        "summary": "Eliminar evento",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del evento",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Delete"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/questionaries": {
+      "get": {
+        "tags": ["Públicos", "Juegos"],
+        "summary": "Obtener cuestionarios",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Questionaries"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Juegos"],
+        "summary": "Insertar cuestionario",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/questionaries"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201Questionaries"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/questionaries/{id}": {
+      "get": {
+        "tags": ["Juegos"],
+        "summary": "Obtener un cuestionario",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del cuestionario",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Questionaries"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Juegos"],
+        "summary": "Actualizar cuestionario",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del cuestionario",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/questionaries"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Questionaries"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Update"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Juegos"],
+        "summary": "Eliminar cuestionario",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del cuestionario",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Delete"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/scores": {
+      "get": {
+        "tags": ["Puntajes"],
+        "summary": "Obtener puntajes",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Scores"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Puntajes"],
+        "summary": "Insertar puntaje",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/scores"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201Scores"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/scores/{id}": {
+      "get": {
+        "tags": ["Puntajes"],
+        "summary": "Obtener un puntaje",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del puntaje",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Scores"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Puntajes"],
+        "summary": "Actualizar puntaje",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del puntaje",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/scores"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Scores"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Update"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Puntajes"],
+        "summary": "Eliminar puntaje",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del puntaje",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Delete"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/videos": {
+      "get": {
+        "tags": ["Públicos", "Videos"],
+        "summary": "Obtener videos",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Videos"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Videos"],
+        "summary": "Insertar video",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/videos"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201Videos"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/videos/{id}": {
+      "get": {
+        "tags": ["Videos"],
+        "summary": "Obtener un video",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del video",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Videos"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Videos"],
+        "summary": "Actualizar video",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del video",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/videos"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Videos"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Update"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Videos"],
+        "summary": "Eliminar video",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del video",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Delete"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/inscriptions": {
+      "get": {
+        "tags": ["Inscripciones"],
+        "summary": "Obtener inscripciones",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Events"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Empty"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/inscriptions/{id}": {
+      "put": {
+        "tags": ["Inscripciones"],
+        "summary": "Inscribirse a un evento",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del evento",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/events"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Events"
+          },
+          "400": {
+            "$ref": "#/components/responses/400User"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Inscriptions"
+          },
+          "406": {
+            "$ref": "#/components/responses/406inscriptions"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Inscripciones"],
+        "summary": "Eliminar inscripción",
+        "security": [
+          {
+            "Authentication": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id del evento",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404Delete"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "400": {
+        "description": "Objeto duplicado",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["El/La ${dato} ya existe"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Token inválido",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["Token inválido"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Inicie sesión",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["Inicie sesión"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "403Rol": {
+        "description": "Se requiere rol administrador",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["Requiere rol administrador"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "No se encontraron datos",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["El/La ${dato} no existe"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "406": {
+        "description": "Error de validaciones",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Error de servidor",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "200Delete": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["Eliminado éxito"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "200Info": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/infoResponse"
+            }
+          }
+        }
+      },
+      "201Info": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/infoResponse"
+            }
+          }
+        }
+      },
+      "200Donations": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/donationsResponse"
+            }
+          }
+        }
+      },
+      "201Donations": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/eventsResponse"
+            }
+          }
+        }
+      },
+      "200Events": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/eventsResponse"
+            }
+          }
+        }
+      },
+      "201Events": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/eventsResponse"
+            }
+          }
+        }
+      },
+      "200Questionaries": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/questionaries"
+            }
+          }
+        }
+      },
+      "201Questionaries": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/questionaries"
+            }
+          }
+        }
+      },
+      "200Scores": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/scores"
+            }
+          }
+        }
+      },
+      "201Scores": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/scores"
+            }
+          }
+        }
+      },
+      "200Videos": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/videos"
+            }
+          }
+        }
+      },
+      "201Videos": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/videos"
+            }
+          }
+        }
+      },
+      "404Empty": {
+        "description": "No se encontraron datos",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "200User": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["Usuario registrado con éxito"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "200Login": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/userResponse"
+            }
+          }
+        }
+      },
+      "400User": {
+        "description": "Objeto duplicado",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["Este usuario ya esta registrado"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "401User": {
+        "description": "Contraseña incorrecta",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["Contraseña incorrecta"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "404User": {
+        "description": "Usuario no encontrado",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["Usuario no encontrado"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "404Update": {
+        "description": "No se encontraron datos",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["El/La ${dato} que desea actualizar no existe"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "404Delete": {
+        "description": "No se encontraron datos",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["El/La ${dato} que desea eliminar no existe"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "404Inscriptions": {
+        "description": "No se encontró evento",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["Evento no encontrado"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "406inscriptions": {
+        "description": "Sin cupo para inscribirse",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "messages": {
+                  "type": "string",
+                  "enum": ["Actualmente no hay cupo para inscribirse"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Authentication": {
+        "type": "apiKey",
+        "name": "x-access-token",
+        "in": "header",
+        "description": "Se requiere token para autenticarse"
+      }
+    },
+    "schemas": {
+      "info": {
+        "type": "object",
+        "required": ["title", "description"],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      },
+      "infoResponse": {
+        "type": "object",
+        "required": ["title", "description"],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "imgURL": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "title": "iglesia ifgf",
+          "description": "servicio ministerial dia 14 de noviembre",
+          "imgURL": "1640744496245.jpg"
+        }
+      },
+      "user": {
+        "type": "object",
+        "required": ["name", "lastname", "email", "password", "cellphone"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "cellphone": {
+            "type": "number",
+            "format": "cell"
+          }
+        },
+        "example": {
+          "name": "Andrik",
+          "lastname": "Quiroz",
+          "email": "prueba@hotmail.com",
+          "password": "12341234",
+          "cellphone": "0961393801"
+        }
+      },
+      "userResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "cellphone": {
+            "type": "number",
+            "format": "cell"
+          }
+        },
+        "example": {
+          "token": "eyJhbfhdsdgfg",
+          "name": "Andrik",
+          "lastname": "Quiroz",
+          "email": "prueba@hotmail.com",
+          "password": "12341234",
+          "cellphone": "0961393801"
+        }
+      },
+      "login": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        },
+        "example": {
+          "email": "prueba@hotmail.com",
+          "password": "12341234"
+        }
+      },
+      "donations": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["ropa", "comida", "dineo"]
+          },
+          "delivery": {
+            "type": "string",
+            "enum": [
+              "entrega vía transacción",
+              "entrega en iglesia",
+              "entrega vía servicio",
+              "retiro en el hogar"
+            ]
+          },
+          "address": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      },
+      "donationsResponse": {
+        "type": "object",
+        "required": ["description", "type", "delivery", "address", "date"],
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              },
+              "lastname": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "cellphone": {
+                "type": "string"
+              }
+            }
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["ropa", "comida", "dinero"]
+          },
+          "delivery": {
+            "type": "string",
+            "enum": [
+              "entrega vía transacción",
+              "entrega en iglesia",
+              "entrega vía servicio",
+              "retiro en el hogar"
+            ]
+          },
+          "address": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "imgURL": {
+            "type": "string"
+          }
+        }
+      },
+      "events": {
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "location",
+          "date",
+          "schedule",
+          "cost",
+          "number"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "schedule": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "number"
+          },
+          "number": {
+            "type": "number"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "example": {
+          "title": "Jovenes",
+          "description": "Campamento de jovenes",
+          "location": "Valle de lo chillos",
+          "date": "25/01/2022",
+          "schedule": "12/02/2022 10:00 am",
+          "cost": 0,
+          "number": 10
+        }
+      },
+      "eventsResponse": {
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "location",
+          "schedule",
+          "cost",
+          "number"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "imgURL": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "schedule": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "number"
+          },
+          "number": {
+            "type": "number"
+          },
+          "inscriptions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "questionaries": {
+        "type": "object",
+        "required": ["name", "questions", "options", "answer"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "questions": {
+            "type": "object",
+            "properties": {
+              "options": {
+                "type": "array",
+                "items": {}
+              },
+              "answer": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "example": {
+          "name": "Jovenes",
+          "questions": {
+            "options": ["pregunta a", "pregunta b"],
+            "answer": "option a"
+          }
+        }
+      },
+      "scores": {
+        "type": "object",
+        "required": ["questionary_id", "score"],
+        "properties": {
+          "questionary_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "score": {
+            "type": "number"
+          }
+        },
+        "example": {
+          "questionary_id": "61e5f8c1bfee900fa1ee7b78",
+          "score": 100
+        }
+      },
+      "videos": {
+        "type": "object",
+        "required": ["title", "description", "type", "url"],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["jovenes", "familiar", "niños"]
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "title": "Servicio domingo 24 enero 2022",
+          "description": "Familias Empoderadas",
+          "type": "familia",
+          "url": "https://www.youtube.com/watch?v=OIN7wl_xsvc"
+        }
+      }
+    }
+  }
+}

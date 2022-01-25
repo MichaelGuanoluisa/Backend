@@ -1,10 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {
-  verifyToken,
-  isAdmin,
-  isUser,
-} = require("../middlewares/authorization");
+const { verifyToken, isUser } = require("../middlewares/authorization");
 const eventsInsCtrl = require("../controllers/eventsInscriptionController");
 
 router.put("/:id", [verifyToken, isUser], eventsInsCtrl.createInscription);

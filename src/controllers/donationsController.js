@@ -45,17 +45,10 @@ exports.createDonations = async (req, res) => {
       }
       data.status = "undefined";
 
-      await model.create(data, (err, doc) => {
-        if (err) {
-          console.log("Error", err);
-          res
-            .status(422)
-            .send({ error: "El formato de datos ingresado es erroneo" });
-        } else {
-          const response = this.populateUser(doc);
-          res.status(201).send(response);
-        }
-      });
+      const doc = await model.create(data);
+      const user = await User.findById({ _id: doc.user_id });
+      const response = populateUser(doc, user);
+      res.status(201).send(response);
     }
   } catch (error) {
     httpError(res, error);
@@ -160,11 +153,14 @@ function populateUsers(data, users) {
   for (const doc of donation) {
     for (const user of users) {
       if (JSON.stringify(doc.user_id) === JSON.stringify(user._id)) {
+        json.user = {
+          user_id: doc.user_id,
+          name: user.name,
+          lastname: user.lastname,
+          email: user.email,
+          cellphone: user.cellphone,
+        };
         json._id = doc._id;
-        json.user_id = doc.user_id;
-        json.name = user.name;
-        json.lastname = user.lastname;
-        json.email = user.email;
         json.description = doc.description;
         json.type = doc.type;
         json.delivery = doc.delivery;
@@ -182,13 +178,16 @@ function populateUsers(data, users) {
 
 function populateUser(data, user) {
   const donation = data;
-  const jsonResponse = {};
+  const jsonResponse = { user: {} };
 
+  jsonResponse.user = {
+    user_id: donation.user_id,
+    name: user.name,
+    lastname: user.lastname,
+    email: user.email,
+    cellphone: user.cellphone,
+  };
   jsonResponse._id = donation._id;
-  jsonResponse.user_id = donation.user_id;
-  jsonResponse.name = user.name;
-  jsonResponse.lastname = user.lastname;
-  jsonResponse.email = user.email;
   jsonResponse.description = donation.description;
   jsonResponse.type = donation.type;
   jsonResponse.delivery = donation.delivery;

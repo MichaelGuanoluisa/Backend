@@ -3,6 +3,12 @@ const morgan = require("morgan");
 const libs = require("./libs/initialSetup");
 const dotenv = require("dotenv");
 const cors = require("cors");
+
+//swagger
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerDocument = require("../swagger.json");
+
 dotenv.config();
 require("./libs/database");
 
@@ -32,6 +38,7 @@ app.use(express.static("public/uploads"));
 
 //rutas
 app.use("/api", routes);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //inicialización de base de datos
 const port = process.env.PORT || 3030;
