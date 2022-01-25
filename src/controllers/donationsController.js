@@ -185,7 +185,7 @@ function populateUsers(data, users) {
 
 function populateUser(data, user) {
   const donation = data;
-  const jsonResponse = {};
+  const jsonResponse = { user: {} };
 
   jsonResponse.user = {
     user_id: donation.user_id,
