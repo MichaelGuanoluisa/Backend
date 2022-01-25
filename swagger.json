@@ -68,7 +68,7 @@
                 "$ref": "#/components/schemas/user"
               }
             },
-            "multipart/form-data": {
+            "application/x-www-form-urlencoded": {
               "schema": {
                 "$ref": "#/components/schemas/user"
               }
@@ -102,7 +102,7 @@
                 "$ref": "#/components/schemas/login"
               }
             },
-            "multipart/form-data": {
+            "application/x-www-form-urlencoded": {
               "schema": {
                 "$ref": "#/components/schemas/login"
               }
@@ -1013,6 +1013,11 @@
               "schema": {
                 "$ref": "#/components/schemas/questionaries"
               }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/questionaries"
+              }
             }
           }
         },
@@ -1087,6 +1092,11 @@
         "requestBody": {
           "content": {
             "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/questionaries"
+              }
+            },
+            "application/x-www-form-urlencoded": {
               "schema": {
                 "$ref": "#/components/schemas/questionaries"
               }
@@ -1188,6 +1198,11 @@
               "schema": {
                 "$ref": "#/components/schemas/scores"
               }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/scores"
+              }
             }
           }
         },
@@ -1268,6 +1283,11 @@
         "requestBody": {
           "content": {
             "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/scores"
+              }
+            },
+            "application/x-www-form-urlencoded": {
               "schema": {
                 "$ref": "#/components/schemas/scores"
               }
@@ -1363,6 +1383,11 @@
               "schema": {
                 "$ref": "#/components/schemas/videos"
               }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/videos"
+              }
             }
           }
         },
@@ -1437,6 +1462,11 @@
         "requestBody": {
           "content": {
             "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/videos"
+              }
+            },
+            "application/x-www-form-urlencoded": {
               "schema": {
                 "$ref": "#/components/schemas/videos"
               }
@@ -1556,6 +1586,11 @@
               "schema": {
                 "$ref": "#/components/schemas/events"
               }
+            }
+          },
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "$ref": "#/components/schemas/events"
             }
           }
         },
@@ -2030,7 +2065,6 @@
     "schemas": {
       "info": {
         "type": "object",
-        "required": ["title", "description"],
         "properties": {
           "title": {
             "type": "string"
@@ -2046,7 +2080,6 @@
       },
       "infoResponse": {
         "type": "object",
-        "required": ["title", "description"],
         "properties": {
           "title": {
             "type": "string"
@@ -2066,7 +2099,6 @@
       },
       "user": {
         "type": "object",
-        "required": ["name", "lastname", "email", "password", "cellphone"],
         "properties": {
           "name": {
             "type": "string"
@@ -2131,7 +2163,6 @@
       },
       "login": {
         "type": "object",
-        "required": ["email", "password"],
         "properties": {
           "email": {
             "type": "string",
@@ -2180,7 +2211,6 @@
       },
       "donationsResponse": {
         "type": "object",
-        "required": ["description", "type", "delivery", "address", "date"],
         "properties": {
           "user": {
             "type": "object",
@@ -2236,15 +2266,6 @@
       },
       "events": {
         "type": "object",
-        "required": [
-          "title",
-          "description",
-          "location",
-          "date",
-          "schedule",
-          "cost",
-          "number"
-        ],
         "properties": {
           "title": {
             "type": "string"
@@ -2281,14 +2302,6 @@
       },
       "eventsResponse": {
         "type": "object",
-        "required": [
-          "title",
-          "description",
-          "location",
-          "schedule",
-          "cost",
-          "number"
-        ],
         "properties": {
           "title": {
             "type": "string"
@@ -2322,7 +2335,6 @@
       },
       "questionaries": {
         "type": "object",
-        "required": ["name", "questions", "options", "answer"],
         "properties": {
           "name": {
             "type": "string"
@@ -2350,7 +2362,6 @@
       },
       "scores": {
         "type": "object",
-        "required": ["questionary_id", "score"],
         "properties": {
           "questionary_id": {
             "type": "string",
@@ -2367,7 +2378,6 @@
       },
       "videos": {
         "type": "object",
-        "required": ["title", "description", "type", "url"],
         "properties": {
           "title": {
             "type": "string"
