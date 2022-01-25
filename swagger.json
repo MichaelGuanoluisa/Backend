@@ -65,7 +65,7 @@
           "content": {
             "aplication/json": {
               "schema": {
-                "$ref": "#/components/schemas/login"
+                "$ref": "#/components/schemas/user"
               }
             }
           }
