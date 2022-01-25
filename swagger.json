@@ -67,6 +67,11 @@
               "schema": {
                 "$ref": "#/components/schemas/user"
               }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/user"
+              }
             }
           }
         },
@@ -93,6 +98,11 @@
         "requestBody": {
           "content": {
             "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/login"
+              }
+            },
+            "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/login"
               }
