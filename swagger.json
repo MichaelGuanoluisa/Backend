@@ -12,6 +12,10 @@
   ],
   "tags": [
     {
+      "name": "Autenticación",
+      "description": "Estos endpoints son para registrarse y para iniciar sesión."
+    },
+    {
       "name": "Públicos",
       "description": "Estos endpoints son públicos."
     },
@@ -53,6 +57,67 @@
     }
   ],
   "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Autenticación"],
+        "summary": "Registro de usuarios",
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/login"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200User"
+          },
+          "404": {
+            "$ref": "#/components/responses/404User"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Autenticación"],
+        "summary": "Registro de usuarios",
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/login"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200Login"
+          },
+          "401": {
+            "$ref": "#/components/responses/401User"
+          },
+          "404": {
+            "$ref": "#/components/responses/404User"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
     "/news": {
       "get": {
         "tags": ["Públicos", "Noticias"],
@@ -62,7 +127,7 @@
             "$ref": "#/components/responses/200Info"
           },
           "404": {
-            "$ref": "#/components/responses/404Empty"
+            "$ref": "#/components/responses/404User"
           },
           "500": {
             "$ref": "#/components/responses/500"
@@ -92,6 +157,12 @@
           },
           "400": {
             "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
           },
           "406": {
             "$ref": "#/components/responses/406"
@@ -164,6 +235,12 @@
           "404": {
             "$ref": "#/components/responses/404Update"
           },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
           "406": {
             "$ref": "#/components/responses/406"
           },
@@ -194,6 +271,12 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
           },
           "404": {
             "$ref": "#/components/responses/404Delete"
@@ -243,6 +326,12 @@
           },
           "400": {
             "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
           },
           "406": {
             "$ref": "#/components/responses/406"
@@ -312,6 +401,12 @@
           "200": {
             "$ref": "#/components/responses/200Info"
           },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
           "404": {
             "$ref": "#/components/responses/404Update"
           },
@@ -345,6 +440,12 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
           },
           "404": {
             "$ref": "#/components/responses/404Delete"
@@ -394,6 +495,12 @@
           },
           "400": {
             "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
           },
           "406": {
             "$ref": "#/components/responses/406"
@@ -463,6 +570,12 @@
           "200": {
             "$ref": "#/components/responses/200Info"
           },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
           "404": {
             "$ref": "#/components/responses/404Update"
           },
@@ -496,6 +609,12 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
           },
           "404": {
             "$ref": "#/components/responses/404Delete"
@@ -547,6 +666,12 @@
         "responses": {
           "201": {
             "$ref": "#/components/responses/201Donations"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
           },
           "400": {
             "$ref": "#/components/responses/400"
@@ -624,6 +749,12 @@
           "200": {
             "$ref": "#/components/responses/200Donations"
           },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
           "404": {
             "$ref": "#/components/responses/404Update"
           },
@@ -657,6 +788,12 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
           },
           "404": {
             "$ref": "#/components/responses/404Delete"
@@ -706,6 +843,12 @@
           },
           "400": {
             "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
           },
           "406": {
             "$ref": "#/components/responses/406"
@@ -775,6 +918,12 @@
           "200": {
             "$ref": "#/components/responses/200Events"
           },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
           "404": {
             "$ref": "#/components/responses/404Update"
           },
@@ -808,6 +957,12 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
           },
           "404": {
             "$ref": "#/components/responses/404Delete"
@@ -857,6 +1012,12 @@
           },
           "400": {
             "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
           },
           "406": {
             "$ref": "#/components/responses/406"
@@ -926,6 +1087,12 @@
           "200": {
             "$ref": "#/components/responses/200Questionaries"
           },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
           "404": {
             "$ref": "#/components/responses/404Update"
           },
@@ -960,6 +1127,12 @@
           "200": {
             "$ref": "#/components/responses/200Delete"
           },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
           "404": {
             "$ref": "#/components/responses/404Delete"
           },
@@ -976,6 +1149,12 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/200Scores"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
           },
           "404": {
             "$ref": "#/components/responses/404Empty"
@@ -1005,6 +1184,12 @@
         "responses": {
           "201": {
             "$ref": "#/components/responses/201Scores"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
           },
           "404": {
             "$ref": "#/components/responses/404Empty"
@@ -1036,6 +1221,12 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/200Scores"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
           },
           "404": {
             "$ref": "#/components/responses/404Empty"
@@ -1077,6 +1268,12 @@
           "200": {
             "$ref": "#/components/responses/200Scores"
           },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
           "404": {
             "$ref": "#/components/responses/404Update"
           },
@@ -1110,6 +1307,12 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
           },
           "404": {
             "$ref": "#/components/responses/404Delete"
@@ -1159,6 +1362,12 @@
           },
           "400": {
             "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
           },
           "406": {
             "$ref": "#/components/responses/406"
@@ -1228,6 +1437,12 @@
           "200": {
             "$ref": "#/components/responses/200Videos"
           },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
           "404": {
             "$ref": "#/components/responses/404Update"
           },
@@ -1262,6 +1477,12 @@
           "200": {
             "$ref": "#/components/responses/200Delete"
           },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Rol"
+          },
           "404": {
             "$ref": "#/components/responses/404Delete"
           },
@@ -1283,6 +1504,12 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/200Events"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
           },
           "404": {
             "$ref": "#/components/responses/404Empty"
@@ -1329,6 +1556,12 @@
           "400": {
             "$ref": "#/components/responses/400User"
           },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
           "404": {
             "$ref": "#/components/responses/404Inscriptions"
           },
@@ -1362,6 +1595,12 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/200Delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
           },
           "404": {
             "$ref": "#/components/responses/404Delete"
@@ -1417,6 +1656,22 @@
                 "message": {
                   "type": "string",
                   "enum": ["Inicie sesión"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "403Rol": {
+        "description": "Se requiere rol administrador",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["Requiere rol administrador"]
                 }
               }
             }
@@ -1631,6 +1886,16 @@
           }
         }
       },
+      "200Login": {
+        "description": "(ok)",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/userResponse"
+            }
+          }
+        }
+      },
       "400User": {
         "description": "Objeto duplicado",
         "content": {
@@ -1641,6 +1906,38 @@
                 "message": {
                   "type": "string",
                   "enum": ["Este usuario ya esta registrado"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "401User": {
+        "description": "Contraseña incorrecta",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["Contraseña incorrecta"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "404User": {
+        "description": "Usuario no encontrado",
+        "content": {
+          "aplication/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": ["Usuario no encontrado"]
                 }
               }
             }
@@ -1717,7 +2014,7 @@
         "type": "apiKey",
         "name": "x-access-token",
         "in": "header",
-        "description": "Requests should pass an api_key header."
+        "description": "Se requiere token para autenticarse"
       }
     },
     "schemas": {
@@ -1779,11 +2076,69 @@
             "type": "number",
             "format": "cell"
           }
+        },
+        "example": {
+          "name": "Andrik",
+          "lastname": "Quiroz",
+          "email": "prueba@hotmail.com",
+          "password": "12341234",
+          "cellphone": "0961393801"
+        }
+      },
+      "userResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "cellphone": {
+            "type": "number",
+            "format": "cell"
+          }
+        },
+        "example": {
+          "token": "eyJhbfhdsdgfg",
+          "name": "Andrik",
+          "lastname": "Quiroz",
+          "email": "prueba@hotmail.com",
+          "password": "12341234",
+          "cellphone": "0961393801"
+        }
+      },
+      "login": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        },
+        "example": {
+          "email": "prueba@hotmail.com",
+          "password": "12341234"
         }
       },
       "donations": {
         "type": "object",
-        "required": ["description", "type", "delivery", "address", "date"],
         "properties": {
           "description": {
             "type": "string"
@@ -1820,6 +2175,10 @@
           "user": {
             "type": "object",
             "properties": {
+              "user_id": {
+                "type": "string",
+                "format": "uuid"
+              },
               "name": {
                 "type": "string"
               },
@@ -1829,45 +2188,39 @@
               "email": {
                 "type": "string",
                 "format": "email"
+              },
+              "cellphone": {
+                "type": "string"
               }
             }
           },
-          "donation": {
-            "type": "object",
-            "properties": {
-              "user_id": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "description": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string",
-                "enum": ["ropa", "comida", "dineo"]
-              },
-              "delivery": {
-                "type": "string",
-                "enum": [
-                  "entrega vía transacción",
-                  "entrega en iglesia",
-                  "entrega vía servicio",
-                  "retiro en el hogar"
-                ]
-              },
-              "address": {
-                "type": "string"
-              },
-              "date": {
-                "type": "string"
-              },
-              "status": {
-                "type": "string"
-              },
-              "imgURL": {
-                "type": "string"
-              }
-            }
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["ropa", "comida", "dinero"]
+          },
+          "delivery": {
+            "type": "string",
+            "enum": [
+              "entrega vía transacción",
+              "entrega en iglesia",
+              "entrega vía servicio",
+              "retiro en el hogar"
+            ]
+          },
+          "address": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "imgURL": {
+            "type": "string"
           }
         }
       },
@@ -1877,6 +2230,7 @@
           "title",
           "description",
           "location",
+          "date",
           "schedule",
           "cost",
           "number"
@@ -1909,6 +2263,7 @@
           "title": "Jovenes",
           "description": "Campamento de jovenes",
           "location": "Valle de lo chillos",
+          "date": "25/01/2022",
           "schedule": "12/02/2022 10:00 am",
           "cost": 0,
           "number": 10
