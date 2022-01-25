@@ -89,7 +89,7 @@
     "/auth/login": {
       "post": {
         "tags": ["Autenticación"],
-        "summary": "Registro de usuarios",
+        "summary": "Inicio de sesión",
         "requestBody": {
           "content": {
             "aplication/json": {
