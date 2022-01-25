@@ -45,17 +45,10 @@ exports.createDonations = async (req, res) => {
       }
       data.status = "undefined";
 
-      await model.create(data, (err, doc) => {
-        if (err) {
-          console.log("Error", err);
-          res
-            .status(422)
-            .send({ error: "El formato de datos ingresado es erroneo" });
-        } else {
-          const response = populateUser(doc);
-          res.status(201).send(response);
-        }
-      });
+      const doc = await model.create(data);
+      const user = await User.findById({ _id: doc.user_id });
+      const response = populateUser(doc, user);
+      res.status(201).send(response);
     }
   } catch (error) {
     httpError(res, error);
@@ -185,7 +178,7 @@ function populateUsers(data, users) {
 
 function populateUser(data, user) {
   const donation = data;
-  const jsonResponse = {};
+  const jsonResponse = { user: {} };
 
   jsonResponse.user = {
     user_id: donation.user_id,
