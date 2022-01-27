@@ -149,29 +149,30 @@ exports.deleteDonationsById = async (req, res) => {
 };
 
 function populateUsers(data, users) {
-  const donation = data;
+  const donations = data;
   const jsonResponse = [];
-  const json = {};
-  for (const doc of donation) {
+  for (const donation of donations) {
     for (const user of users) {
-      if (JSON.stringify(doc.user_id) === JSON.stringify(user._id)) {
-        json.user = {
-          user_id: doc.user_id,
-          name: user.name,
-          lastname: user.lastname,
-          email: user.email,
-          cellphone: user.cellphone,
-        };
-        json._id = doc._id;
-        json.description = doc.description;
-        json.type = doc.type;
-        json.delivery = doc.delivery;
-        json.address = doc.address;
-        json.date = doc.date;
-        json.status = doc.status;
-        json.message = doc.message;
-        json.imgURL = doc.imgURL;
-        jsonResponse.push(json);
+      if (JSON.stringify(donation.user_id) === JSON.stringify(user._id)) {
+        const newData = {
+          user: {
+            user_id: user._id,
+            name: user.name,
+            lastname: user.lastname,
+            email: user.email,
+            cellphone: user.cellphone,
+          },
+          _id: donation._id,
+          description: donation.description,
+          type: donation.type,
+          delivery: donation.delivery,
+          address: donation.address,
+          date: donation.date,
+          status: donation.status,
+          message: donation.message,
+          imgURL: donation.imgURL,
+        }
+        jsonResponse.push(newData);
       }
     }
   }
