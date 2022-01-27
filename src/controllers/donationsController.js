@@ -45,9 +45,10 @@ exports.createDonations = async (req, res) => {
       }
       data.status = "undefined";
 
-      const doc = await model.create(data);
-      const user = await User.findById({ _id: doc.user_id });
-      const response = populateUser(doc, user);
+      const donation = new model(data);
+      await donation.save();
+      const user = await User.findById({ _id: donation.user_id });
+      const response = populateUser(donation, user);
       res.status(201).send(response);
     }
   } catch (error) {
@@ -118,7 +119,8 @@ exports.updateDonationsById = async (req, res) => {
       await model.updateOne({ _id: parseId(id) }, body);
       const doc = await model.findById({ _id: parseId(id) });
 
-      const response = this.populateUser(doc);
+      const user = await User.findById({ _id: doc.user_id });
+      const response = populateUser(doc, user);
       return res.status(200).send(response);
     }
   } catch (error) {

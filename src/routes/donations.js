@@ -17,7 +17,7 @@ router.post(
 );
 router.put(
   "/:id",
-  [verifyToken, isAdmin],
+  [verifyToken],
   donationsCtrl.fileUpload,
   donationsCtrl.updateDonationsById
 );
