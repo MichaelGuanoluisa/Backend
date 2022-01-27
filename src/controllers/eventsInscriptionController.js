@@ -81,11 +81,12 @@ exports.deleteInscriptionById = async (req, res) => {
     const token = req.headers["x-access-token"];
     const decoded = auth.decoded(token);
 
-    const doc = model.findById({ _id: parseId(id) });
+    const doc = await model.findById({ _id: parseId(id) });
+    console.log({doc})
     if (!doc) return res.status(404).send({ message: "evento no encontrado" });
-
+    
     for (let i = 0; i < doc.inscriptions?.length; i++) {
-      if (decoded.id === doc.inscriptions[i]) {
+      if (decoded.id === String(doc.inscriptions[i])) {
         doc.inscriptions.splice(i, 1);
       }
     }
