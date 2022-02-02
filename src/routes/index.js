@@ -21,4 +21,16 @@ router.get("*", (req, res) => {
   res.status(404).send({ error: "no se encontro la ruta" });
 });
 
+router.post("*", (req, res) => {
+  res.status(404).send({ error: "no se encontro la ruta" });
+});
+
+router.put("*", (req, res) => {
+  res.status(404).send({ error: "no se encontro la ruta" });
+});
+
+router.delete("*", (req, res) => {
+  res.status(404).send({ error: "no se encontro la ruta" });
+});
+
 module.exports = router;
