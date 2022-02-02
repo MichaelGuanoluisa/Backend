@@ -130,7 +130,7 @@ exports.deleteNewsById = async (req, res) => {
         unlink(path.resolve("./public/uploads/" + doc.imgURL));
       }
     }
-    res.send({ message: "Eliminado con éxito" });
+    res.status(200).send({ message: "Eliminado con éxito" });
   } catch (error) {
     httpError(res, error);
   }

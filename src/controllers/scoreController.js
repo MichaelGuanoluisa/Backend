@@ -97,7 +97,7 @@ exports.deleteScoreById = async (req, res) => {
         .status(404)
         .send({ message: "La puntuacion que desea borrar no existe" });
 
-    res.send({ message: "Eliminado con éxito" });
+    res.status(200).send({ message: "Eliminado con éxito" });
   } catch (error) {
     httpError(res, error);
   }

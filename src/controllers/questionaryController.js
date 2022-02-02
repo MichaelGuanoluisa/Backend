@@ -89,20 +89,7 @@ exports.deleteQuestionaryById = async (req, res) => {
         .status(404)
         .send({ message: "El cuestionario que desea borrar no existe" });
 
-    res.send({ message: "Eliminado con éxito" });
-  } catch (error) {
-    httpError(res, error);
-  }
-};
-
-exports.deleteAllQuestionary = (req, res) => {
-  try {
-    model.deleteMany({}, (err, docs) => {
-      if (!docs) {
-        res.status(404).send({});
-      }
-      res.send(docs);
-    });
+    res.status(200).send({ message: "Eliminado con éxito" });
   } catch (error) {
     httpError(res, error);
   }

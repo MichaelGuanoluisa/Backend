@@ -142,7 +142,7 @@ exports.deleteDonationsById = async (req, res) => {
         unlink(path.resolve("./public/uploads/" + doc.imgURL));
       }
     }
-    res.send({ message: "Eliminado con éxito" });
+    res.status(200).send({ message: "Eliminado con éxito" });
   } catch (error) {
     httpError(res, error);
   }
@@ -171,7 +171,7 @@ function populateUsers(data, users) {
           status: donation.status,
           message: donation.message,
           imgURL: donation.imgURL,
-        }
+        };
         jsonResponse.push(newData);
       }
     }
