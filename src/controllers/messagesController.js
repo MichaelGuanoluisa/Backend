@@ -34,9 +34,7 @@ exports.createMessages = async (req, res) => {
     } else {
       const doc = await model.findOne({ title: data.title });
       if (doc) {
-        if (req.file?.filename) {
-          unlink(path.resolve("./public/uploads/" + req.file?.filename));
-        }
+        deleteImage(req);
         return res.status(400).send({ message: "El mensaje ya existe" });
       }
 
@@ -93,12 +91,17 @@ exports.updateMessagesById = async (req, res) => {
     } else {
       const message = await model.findById({ _id: parseId(id) });
       if (!message) {
-        if (req.file?.filename) {
-          unlink(path.resolve("./public/uploads/" + req.file.filename));
-        }
+        deleteImage(req);
         return res
           .status(404)
           .send({ message: "El mensaje que desea actualizar no existe" });
+      }
+      const doc1 = await model.findOne({ title: body.title });
+      if (doc1) {
+        deleteImage(req);
+        return res
+          .status(406)
+          .send({ message: "El mensaje bíblico ya existe" });
       }
 
       if (req.file && req.file.filename) {
@@ -136,3 +139,9 @@ exports.deleteMessagesById = async (req, res) => {
     httpError(res, error);
   }
 };
+
+function deleteImage(req) {
+  if (req.file?.filename) {
+    unlink(path.resolve("./public/uploads/" + req.file?.filename));
+  }
+}

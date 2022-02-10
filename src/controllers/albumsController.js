@@ -34,9 +34,7 @@ exports.createAlbums = async (req, res) => {
     } else {
       const doc = await model.findOne({ title: data.title });
       if (doc) {
-        if (req.file?.filename) {
-          unlink(path.resolve("./public/uploads/" + req.file?.filename));
-        }
+        deleteImage(req);
         return res.status(400).send({ message: "La foto ya existe" });
       }
 
@@ -94,17 +92,24 @@ exports.updateAlbumsById = async (req, res) => {
       const album = await model.findById({ _id: parseId(id) });
 
       if (!album) {
-        if (req.file?.filename) {
-          unlink(path.resolve("./public/uploads/" + req.file.filename));
-        }
+        deleteImage(req);
         return res
           .status(404)
           .send({ message: "La foto que desea actualizar no existe" });
       }
+      const doc1 = await model.findOne({ title: body.title });
+      if (doc1) {
+        deleteImage(req);
+        return res.status(406).send({ message: "La foto ya existe" });
+      }
 
       if (req.file && req.file.filename) {
         body.imgURL = req.file.filename;
-        unlink(path.resolve("./public/uploads/" + album.imgURL));
+        if (doc.imgURL != "ifgf.png") {
+          if (fs.existsSync(path.resolve("./public/uploads/" + album.imgURL))) {
+            unlink(path.resolve("./public/uploads/" + album.imgURL));
+          }
+        }
       } else {
         body.imgURL = album.imgURL;
       }
@@ -137,3 +142,9 @@ exports.deleteAlbumsById = async (req, res) => {
     httpError(res, error);
   }
 };
+
+function deleteImage(req) {
+  if (req.file?.filename) {
+    unlink(path.resolve("./public/uploads/" + req.file?.filename));
+  }
+}

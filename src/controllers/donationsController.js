@@ -40,8 +40,6 @@ exports.createDonations = async (req, res) => {
 
       if (req?.file && req?.file?.filename) {
         data.imgURL = `${req?.file?.filename}`;
-      } else {
-        data.imgURL = "ifgf.png";
       }
       data.status = "undefined";
 

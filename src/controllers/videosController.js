@@ -59,7 +59,6 @@ exports.updateVideosById = async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
-    console.log(body);
 
     const errors = validations.validateUpdate(req);
 
@@ -67,10 +66,16 @@ exports.updateVideosById = async (req, res) => {
       return res.status(406).send(errors);
     } else {
       const video = await model.findById({ _id: parseId(id) });
-      if (!video)
+      if (!video) {
         return res
           .status(404)
           .send({ message: "El video que desea actualizar no existe" });
+      }
+
+      const doc1 = await model.findOne({ title: body.url });
+      if (doc1) {
+        return res.status(406).send({ message: "El video ya existe" });
+      }
 
       await model.updateOne({ _id: parseId(id) }, body);
       const doc = await model.findById({ _id: parseId(id) });

@@ -45,13 +45,17 @@ exports.validate = (req) => {
   if (typeof date !== "string") {
     message.error.push("La fecha tiene un formato incorrecto");
   }
+  if (!req.file) {
+    message.error.push("La foto es necesaria");
+  }
 
   if (message.error.length !== 0) {
-    if (req.file) {
+    if (req.file?.filename) {
       unlink(path.resolve("./public/uploads/" + req?.file?.filename));
     }
     return message;
   }
+  return null;
 };
 
 exports.validateUpdate = (req) => {
@@ -111,4 +115,5 @@ exports.validateUpdate = (req) => {
   if (messages.error.length !== 0) {
     return messages;
   }
+  return null;
 };

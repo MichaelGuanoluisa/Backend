@@ -92,17 +92,24 @@ exports.updateNewsById = async (req, res) => {
     } else {
       const doc = await model.findById({ _id: parseId(id) });
       if (!doc) {
-        if (req.file?.filename) {
-          unlink(path.resolve("./public/uploads/" + req.file?.filename));
-        }
+        deleteImage(req);
         return res
           .status(404)
           .send({ message: "La noticia que desea actualizar no existe" });
       }
+      const doc1 = await model.findOne({ title: news.title });
+      if (doc1) {
+        deleteImage(req);
+        return res.status(406).send({ message: "La noticia ya existe" });
+      }
 
       if (req.file && req.file.filename) {
         news.imgURL = req.file.filename;
-        unlink(path.resolve("./public/uploads/" + doc.imgURL));
+        if (doc.imgURL != "ifgf.png") {
+          if (fs.existsSync(path.resolve("./public/uploads/" + doc.imgURL))) {
+            unlink(path.resolve("./public/uploads/" + doc.imgURL));
+          }
+        }
       } else {
         news.imgURL = doc.imgURL;
       }
@@ -135,3 +142,9 @@ exports.deleteNewsById = async (req, res) => {
     httpError(res, error);
   }
 };
+
+function deleteImage(req) {
+  if (req.file?.filename) {
+    unlink(path.resolve("./public/uploads/" + req.file?.filename));
+  }
+}

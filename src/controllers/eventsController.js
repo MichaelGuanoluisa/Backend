@@ -34,9 +34,7 @@ exports.createEvents = async (req, res) => {
     } else {
       const doc = await model.findOne({ title: data.title });
       if (doc) {
-        if (req.file?.filename) {
-          unlink(path.resolve("./public/uploads/" + req.file?.filename));
-        }
+        deleteImage(req);
         return res.status(400).send({ message: "El evento ya existe" });
       }
 
@@ -87,24 +85,31 @@ exports.updateEventsById = async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
-    const errors = validations.validateUpdate(req, res);
-
+    const errors = validations.validateUpdate(req);
     if (errors) {
       return res.status(406).send(errors);
     } else {
       const event = await model.findById({ _id: parseId(id) });
       if (!event) {
-        if (req.file?.filename) {
-          unlink(path.resolve("./public/uploads/" + req.file?.filename));
-        }
+        deleteImage(req);
         return res
           .status(404)
           .send({ message: "El evento que desea actualizar no existe" });
       }
 
+      const data = await model.findOne({ title: body.title });
+      if (data) {
+        deleteImage(req);
+        return res.status(406).send({ message: "El evento ya existe" });
+      }
+
       if (req.file && req.file.filename) {
         body.imgURL = req.file.filename;
-        unlink(path.resolve("./public/uploads/" + event.imgURL));
+        if (event.imgURL != "ifgf.png") {
+          if (fs.existsSync(path.resolve("./public/uploads/" + event.imgURL))) {
+            unlink(path.resolve("./public/uploads/" + event.imgURL));
+          }
+        }
       } else {
         body.imgURL = event.imgURL;
       }
@@ -134,3 +139,9 @@ exports.deleteEventsById = async (req, res) => {
     httpError(res, error);
   }
 };
+
+function deleteImage(req) {
+  if (req.file?.filename) {
+    unlink(path.resolve("./public/uploads/" + req.file?.filename));
+  }
+}

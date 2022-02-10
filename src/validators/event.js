@@ -1,8 +1,7 @@
 const { unlink } = require("fs-extra");
 const path = require("path");
-const mongoose = require("mongoose");
 
-exports.validate = (req, res, next) => {
+exports.validate = (req) => {
   const { description, title, schedule, location, cost } = req.body;
   const message = { error: [] };
 
@@ -45,7 +44,7 @@ exports.validate = (req, res, next) => {
   }
 };
 
-exports.validateUpdate = (req, res, next) => {
+exports.validateUpdate = (req) => {
   const { description, title, schedule, location, cost } = req.body;
   const id = req.params.id;
   const message = { error: [] };
@@ -57,6 +56,7 @@ exports.validateUpdate = (req, res, next) => {
   } else {
     message.error.push("El id es incorrecto");
   }
+
   if (title) {
     if (typeof title !== "string") {
       message.error.push("El titulo ingresado es incorrecto");
@@ -92,5 +92,7 @@ exports.validateUpdate = (req, res, next) => {
       unlink(path.resolve("./public/uploads/" + req.file.filename));
     }
     return message;
+  } else {
+    return null;
   }
 };

@@ -65,10 +65,16 @@ exports.updateQuestionaryById = async (req, res) => {
       return res.status(406).send(errors);
     } else {
       const questionary = await model.findById({ _id: parseId(id) });
-      if (!questionary)
+      if (!questionary) {
         return res
           .status(404)
           .send({ message: "El cuestionario que desea actualizar no existe" });
+      }
+
+      const doc1 = await model.findOne({ title: body.title });
+      if (doc1) {
+        return res.status(406).send({ message: "El cuestionario ya existe" });
+      }
 
       await model.updateOne({ _id: parseId(id) }, body);
       const doc = await model.findById({ _id: parseId(id) });
