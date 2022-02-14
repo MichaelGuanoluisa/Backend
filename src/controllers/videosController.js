@@ -72,7 +72,7 @@ exports.updateVideosById = async (req, res) => {
           .send({ message: "El video que desea actualizar no existe" });
       }
 
-      const doc1 = await model.findOne({ title: body.url });
+      const doc1 = await model.findOne({ url: body.url });
       if (doc1) {
         return res.status(406).send({ message: "El video ya existe" });
       }
