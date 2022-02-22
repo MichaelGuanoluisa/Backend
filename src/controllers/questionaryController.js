@@ -70,8 +70,8 @@ exports.updateQuestionaryById = async (req, res) => {
           .status(404)
           .send({ message: "El cuestionario que desea actualizar no existe" });
       }
-
-      const doc1 = await model.findOne({ title: body.title });
+      
+      const doc1 = await model.findOne({ name: body.name });
       if (doc1) {
         return res.status(406).send({ message: "El cuestionario ya existe" });
       }
