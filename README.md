@@ -31,6 +31,7 @@ To run this project, you will need to add the following environment variables to
 Para desplegar de forma local este proyecto se necesita tener las siguientes requerimientos:
 - [Base de datos MongoDB](https://www.mongodb.com/try/download)
 - Variables de entorno
+- Node.js V14.X
 
 Se necesita instalar las dependencias, para eso con el siguiente comando:
 ```bash
