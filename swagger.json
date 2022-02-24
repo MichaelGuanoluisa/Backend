@@ -2340,11 +2340,12 @@
             "type": "string"
           },
           "questions": {
-            "type": "object",
+            "type": "array",
             "properties": {
+              "title":"string",
               "options": {
                 "type": "array",
-                "items": {}
+                "items": []
               },
               "answer": {
                 "type": "string"
@@ -2353,11 +2354,19 @@
           }
         },
         "example": {
-          "name": "Jovenes",
-          "questions": {
-            "options": ["pregunta a", "pregunta b"],
-            "answer": "option a"
-          }
+          "name": "Jóvenes valientes y empoderados",
+          "questions": [
+            {
+              "title":"Cual es el versiculo mas largo de la biblia?",
+              "options":["opción a", "opción b"],
+              "answer":"option a"
+            },
+            {
+              "title":"Cual es el versiculo mas largo de la biblia?",
+             "options":["opción a", "opción b"],
+              "answer":"opción a"
+            }
+          ]
         }
       },
       "scores": {
