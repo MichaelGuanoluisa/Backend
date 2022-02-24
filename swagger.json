@@ -2372,6 +2372,10 @@
       "scores": {
         "type": "object",
         "properties": {
+          "user_id":{
+            "type": "string",
+            "format": "uuid"
+          },
           "questionary_id": {
             "type": "string",
             "format": "uuid"
