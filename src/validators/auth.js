@@ -26,8 +26,10 @@ exports.validate = (req) => {
   if (!email) {
     message.error.push("El correo es requerido");
   }
-  if (typeof email != "string") {
-    message.error.push("El correo tiene un formato incorrecto");
+  if (/^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i.test(email)){
+    console.log("La dirección de email " + email + " es correcta.");
+  } else {
+    message.error.push("La dirección de email es incorrecta.");
   }
   if (!password) {
     message.error.push("La contraseña es requerida");
@@ -37,6 +39,8 @@ exports.validate = (req) => {
   }
   if (message?.error?.length != 0) {
     return message;
+  }else {
+    return null;
   }
 };
 
@@ -47,8 +51,10 @@ exports.validateLogin = (req) => {
   if (!email) {
     messages.error.push("El correo es requerido");
   }
-  if (typeof email != "string") {
-    messages.error.push("El correo tiene un formato incorrecto");
+  if (/^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i.test(email)){
+    console.log("La dirección de email " + email + " es correcta.");
+  } else {
+    messages.error.push("La dirección de email es incorrecta.");
   }
 
   if (!password) {
@@ -59,5 +65,7 @@ exports.validateLogin = (req) => {
   }
   if (messages?.error?.length != 0) {
     return messages;
+  }else {
+    return null;
   }
 };

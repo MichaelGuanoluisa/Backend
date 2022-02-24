@@ -15,7 +15,7 @@ exports.validate = (req) => {
 exports.validateUpdate = (req) => {
   const { name } = req.body;
   const message = { error: [] };
-  if (!name) {
+  if (name) {
     if (typeof name !== "string") {
       message.error.push("El nombre ingresado es incorrecto");
     }
