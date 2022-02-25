@@ -105,7 +105,7 @@ exports.updateAlbumsById = async (req, res) => {
 
       if (req.file && req.file.filename) {
         body.imgURL = req.file.filename;
-        if (doc.imgURL != "ifgf.png") {
+        if (album.imgURL != "ifgf.png") {
           if (fs.existsSync(path.resolve("./public/uploads/" + album.imgURL))) {
             unlink(path.resolve("./public/uploads/" + album.imgURL));
           }

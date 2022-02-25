@@ -106,7 +106,11 @@ exports.updateMessagesById = async (req, res) => {
 
       if (req.file && req.file.filename) {
         body.imgURL = req.file.filename;
-        unlink(path.resolve("./public/uploads/" + message.imgURL));
+        if (message.imgURL != "ifgf.png") {
+          if (fs.existsSync(path.resolve("./public/uploads/" + message.imgURL))) {
+            unlink(path.resolve("./public/uploads/" + message.imgURL));
+          }
+        }
       } else {
         body.imgURL = message.imgURL;
       }
