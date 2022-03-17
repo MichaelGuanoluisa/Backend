@@ -33,7 +33,8 @@ const sendEmail = (user, subject, text) => {
       `
     }, function(err, info){
       if(err){
-        throw new Error(err);
+        console.log(err)
+        return(err);
       }
       console.log('Message sent: ' + info.response);
       console.log('Message not sent: ' + info.rejected);
