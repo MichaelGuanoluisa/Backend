@@ -1581,13 +1581,6 @@
           }
         ],
         "requestBody": {
-          "content": {
-            "aplication/json": {
-              "schema": {
-                "$ref": "#/components/schemas/events"
-              }
-            }
-          },
           "application/x-www-form-urlencoded": {
             "schema": {
               "$ref": "#/components/schemas/events"

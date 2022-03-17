@@ -1,45 +1,56 @@
 const User = require("../models/users");
 const sendEmail = require("../libs/sendEmail");
-const Joi = require("joi");
+//const Joi = require("joi");
+const validations = require("../validators/password-reset")
 const express = require("express");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
   try {
-    const schema = Joi.object({ email: Joi.string().email().required() });
-    const { error } = schema.validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    // const schema = Joi.object({ email: Joi.string().email().required() });
+    // const { error } = schema.validate(req.body);
+    // if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await User.findOne({ email: req.body.email });
-    if (!user)
-      return res.status(400).send("user with given email doesn't exist");
+    const errors = validations.validate(req);
+    if (errors) {
+      return res.status(406).send(errors);
+    } else {
+      const user = await User.findOne({ email: req.body.email });
+      console.log(req.body.email)
+      if (!user)
+        return res.status(400).send({message: "No existe usuario registrado con este email"});
 
-    const link = `${process.env.BASE_URL}/password-reset/${user._id}`;
-    await sendEmail(user.email, "Password reset", link);
+      const link = `https://ifgf.vercel.app/reset-password/${user._id}`;
+      sendEmail(user, "Recuperación de contraseña", link);
 
-    res.send("password reset link sent to your email account");
+      res.status(200).send("Se ha enviado el correo con éxito");
+    }
   } catch (error) {
-    res.send("An error occured");
+    res.status(503).send(`Ha ocurrido un error :C : ${error.message}` );
     console.log(error);
   }
 });
 
 router.post("/:userId", async (req, res) => {
   try {
-    const schema = Joi.object({ password: Joi.string().required() });
-    const { error } = schema.validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    // const schema = Joi.object({ password: Joi.string().required() });
+    // const { error } = schema.validate(req.body);
+    // if (error) return res.status(400).send(error.details[0].message);
+    const errors = validations.validatePassword(req);
+    if (errors) {
+      return res.status(406).send(errors);
+    } else {
+      const user = await User.findById(req.params.userId);
+      if (!user) return res.status(400).send("Link inválido o caducado");
 
-    const user = await User.findById(req.params.userId);
-    if (!user) return res.status(400).send("invalid link or expired");
+      user.password = req.body.password;
+      await user.save();
 
-    user.password = req.body.password;
-    await user.save();
-
-    res.send("password reset sucessfully.");
+      res.status(200).send("Contraseña actualizada con éxito");
+    }
   } catch (error) {
-    res.send("An error occured");
     console.log(error);
+    res.status(503).send("Ha ocurrido un error :C :", error.message);
   }
 });
 
